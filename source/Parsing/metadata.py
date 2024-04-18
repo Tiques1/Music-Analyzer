@@ -62,5 +62,5 @@ def extract_mp3_metadata(file):
 # Пример использования
 if __name__ == "__main__":
     # Укажите путь к вашему MP3 файлу
-    mp3_file = "D:\\Music\\Unlike Pluto,Joanna Jones - No Scrubs (feat. Joanna Jones).mp3"
+    mp3_file = r"D:\Music\Kish,Vxlious - Started From The Bottom.mp3"
     extract_mp3_metadata(mp3_file)

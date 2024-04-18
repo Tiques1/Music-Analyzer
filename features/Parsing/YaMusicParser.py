@@ -1,3 +1,5 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
@@ -35,10 +37,14 @@ class YaMusicParser:
         for elem in elements:
             parent = elem.find_element(By.XPATH, "./..")
 
-            try:
-                elem.click()
-            except ElementClickInterceptedException:
-                continue
+            # Don't touch scrollbar motherfuckers
+            # If you touch scrollbar, you will fuck
+            while True:
+                try:
+                    elem.click()
+                except ElementClickInterceptedException:
+                    continue
+                break
 
             while True:
                 try:
