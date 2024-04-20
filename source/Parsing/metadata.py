@@ -1,66 +1,51 @@
 from mutagen.mp3 import MP3
-from mutagen.id3 import ID3, APIC, TIT2, TPE1, TRCK
+from mutagen.id3 import ID3, TIT2, TPE1, TALB, TRCK, TCON, TDRC, TextFrame
 
 
-def extract_mp3_metadata(file):
-    try:
-        audio = MP3(mp3_file, ID3=ID3)
-        tags = audio.tags
+class Track:
+    def __init__(self, mp3_file):
+        self.__audio = MP3(mp3_file, ID3=ID3)
+        self.__information = self.__text_metadata()
 
-        # Получение названия трека (Title)
-        if "TIT2" in tags:
-            title = tags["TIT2"].text[0]
-        else:
-            title = "Unknown Title"
+        self.title = self.__information.get(TIT2)
+        self.artist = self.__information.get(TPE1).split('/')
+        self.album = self.__information.get(TALB)
+        self.alb_number = self.__information.get(TRCK)
+        self.genre = self.__information.get(TCON)
+        self.year = self.__information.get(TDRC)
 
-        # Получение исполнителя (Artist)
-        if "TPE1" in tags:
-            artist = tags["TPE1"].text[0]
-        else:
-            artist = "Unknown Artist"
+        # https://mutagen.readthedocs.io/en/latest/api/mp3.html#mutagen.mp3.MPEGInfo
+        self.file_info = self.__audio.info
 
-        # Получение альбома (Album)
-        if "TALB" in tags:
-            album = tags["TALB"].text[0]
-        else:
-            album = "Unknown Album"
+    def __text_metadata(self):
+        information = {}
+        for tag in self.__audio.tags.values():
+            try:
+                if issubclass(type(tag), TextFrame):
+                    information[type(tag)] = tag.text[0]
+            finally:
+                pass
+        return information
 
-        # Получение номера трека (Track Number)
-        if "TRCK" in tags:
-            track_number = tags["TRCK"].text[0]
-        else:
-            track_number = "Unknown Track Number"
-
-        # Жанр (Genre)
-        if "TCON" in tags:
-            genre = tags["TCON"].text[0]
-        else:
-            genre = "No genre"
-
-        # Вывод метаданных
-        print("Название трека:", title)
-        print("Исполнитель:", artist)
-        print("Альбом:", album)
-        print("Номер трека:", track_number)
-        print("Жанр", genre)
-
-        # Получение обложки (Cover Art)
-        if "APIC:" in tags:
-            for key in tags.keys():
-                if "APIC:" in key:
-                    with open("cover.jpg", "wb") as f:
-                        f.write(tags[key].data)
-                    print("Обложка сохранена в файл 'cover.jpg'")
-                    break
-        else:
-            print("Обложка не найдена")
-
-    except Exception as e:
-        print("Произошла ошибка:", e)
+    def cover(self, output=None):
+        if "APIC:" not in self.__audio.tags:
+            return
+        if output is not None:
+            with open(f"{output}", "wb") as f:
+                f.write(self.__audio.tags["APIC:"].data)
+        return self.__audio.tags["APIC:"].data
 
 
-# Пример использования
 if __name__ == "__main__":
-    # Укажите путь к вашему MP3 файлу
-    mp3_file = r"D:\Music\Kish,Vxlious - Started From The Bottom.mp3"
-    extract_mp3_metadata(mp3_file)
+    file = r"D:\Music\Vxlious - Alright.mp3"
+    track = Track(file)
+
+    print(track.title)
+    print(track.artist)
+    print(track.genre)
+    print(track.album)
+    print(track.year)
+    print(track.alb_number)
+    bytes_image = track.cover('cover2.jpg')
+
+    print(track.file_info.bitrate)
