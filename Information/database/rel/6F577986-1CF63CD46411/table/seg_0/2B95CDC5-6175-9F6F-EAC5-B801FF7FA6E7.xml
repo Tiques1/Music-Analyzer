@@ -1,0 +1,116 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="2B95CDC5-6175-9F6F-EAC5-B801FF7FA6E7" name="track">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:16:14 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<ordsAlias>table_6</ordsAlias>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="9375D9FB-ACCE-63CC-34AA-2876599F0101">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:16:32 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="name" id="FE0B62A8-7BE9-7B95-811E-99DB74B5BBB6">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:17:41 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT040</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="album_num" id="C3E4D487-4325-AF60-41B5-17201D69B644">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:17:41 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="year" id="D8226BCA-0265-8733-ACB1-2DE86A5B3D8B">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:17:41 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT007</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="album" id="939E1C1D-38DB-79B3-0DF4-0C89AC01B1D8">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:18:30 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="B85AE79F-4A15-0AB0-1FA8-8F65808D28FF" referredColumn="9823709B-E3E2-8D08-A1B5-7227FA4936A7"/>
+</associations>
+</Column>
+<Column name="artist" id="9FB70021-83E1-A1E3-4F45-519EEC337520">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:18:40 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<previousColumn>false</previousColumn>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="BD180942-3076-EB4E-E8A9-4E6156DE4352" referredColumn="70DFA8F0-22F5-A99D-305D-AE217FBD56A0"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="DFBE12CF-9C23-3A06-D29C-BBD1BDC6C42E" name="track_PK">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:16:32 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="9375D9FB-ACCE-63CC-34AA-2876599F0101"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="3A7C79AD-EEE3-E354-389A-7FD3E46B303A" name="track_album_FK">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:18:30 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="939E1C1D-38DB-79B3-0DF4-0C89AC01B1D8"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="8CE838FE-93D9-24BF-8BE2-47CC4D606C85" name="track_Artist_FK">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:18:40 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="9FB70021-83E1-A1E3-4F45-519EEC337520"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>

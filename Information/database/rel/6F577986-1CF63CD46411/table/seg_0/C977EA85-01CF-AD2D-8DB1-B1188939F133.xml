@@ -1,0 +1,56 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="C977EA85-01CF-AD2D-8DB1-B1188939F133" name="label">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:00:30 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<ordsAlias>table_2</ordsAlias>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="id" id="CC510E23-8500-7255-C668-0431B76B01FD">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:01:53 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="name" id="073EAEBF-129F-3563-85FD-401B939983E8">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:01:53 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT040</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="30B164B7-E22F-0DEE-8B2A-35C7F6988DB3" name="label_PK">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:01:53 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<pk>true</pk>
+<indexState>Primary Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="CC510E23-8500-7255-C668-0431B76B01FD"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="1E9376B2-36D9-9342-8DB5-4F9899B81AF6" name="label__UNv1">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-21 14:01:53 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<indexState>Unique Constraint</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="CC510E23-8500-7255-C668-0431B76B01FD"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
