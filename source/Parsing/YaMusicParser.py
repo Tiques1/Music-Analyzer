@@ -3,6 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException
 from selenium.common.exceptions import StaleElementReferenceException
 from selenium.common.exceptions import ElementClickInterceptedException
+from source.Exceptions import UnknownLink, GetError
+import requests
+import re
 
 
 class YaMusicParser:
@@ -53,8 +56,48 @@ class YaMusicParser:
                     pass
 
 
+class LinkHandler:
+    def __init__(self):
+        self.types = ('artist', 'album')
+        self.patterns = (r'https://music\.yandex\.ru/album/\d+',
+                         r'https://music\.yandex\.ru/artist/\d+/tracks')
+
+    def define(self, link: str) -> str:
+        if link[0:24] != 'https://music.yandex.ru/':
+            raise UnknownLink(link)
+        ltype = link.split('/')
+        if ltype[3] in self.types:
+            return ltype[3]
+        else:
+            raise UnknownLink(link)
+
+    # Does not tell if artist or album not exists
+    def exists(self, link: str) -> bool:
+        match = False
+        for pattern in self.patterns:
+            if re.match(pattern, link):
+                match = True
+        if not match:
+            raise UnknownLink(link)
+
+        try:
+            if requests.get(link) is not None:
+                return True
+            else:
+                return False
+        except Exception as e:
+            raise GetError(e)
+
+
 if __name__ == '__main__':
-    parser = YaMusicParser()
-    parser.parse('https://music.yandex.ru/artist/8855006/tracks', '_music_save_button')
+    # parser = YaMusicParser()
+    # parser.parse('https://music.yandex.ru/artist/8855006/tracks', '_music_save_button')
+
+    album = 'https://music.yandex.ru/album/16698062'
+    artist = 'https://music.yandex.ru/artist/8855006/tracks'
+
+    lh = LinkHandler()
+    if lh.exists(artist):
+        link_type = lh.define(artist)
 
 
