@@ -10,7 +10,8 @@ with open('links.txt', 'r') as file:
     links = file.readlines()
 
 for link in links:
-    parser.parse(link, '_music_save_button')
+    parser.url = link
+    parser.download()
 
 db = DBHelper('music.db')
 for t in os.listdir(parser.save_dir):
