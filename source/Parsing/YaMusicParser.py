@@ -1,53 +1,113 @@
 from selenium import webdriver
 from selenium.webdriver.common.by import By
-from selenium.common.exceptions import TimeoutException
-from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import ElementClickInterceptedException
-from source.Exceptions import UnknownLink
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, \
+    ElementClickInterceptedException
+import os
+from enum import Enum
 import re
+
+"""
+В браузере должно быть установлено расширение https://chromewebstore.google.com/detail/
+%D1%81%D0%BA%D0%B0%D1%87%D0%B0%D1%82%D1%8C-%D0%BC%D1%83%D0%B7%D1%8B%D0%BA%D1%83/hfofhoffdcfcjgmilkpnhkamcgemaban
+А также выполнен вход в яндекс музыку
+
+Стандартный цикл работы выглядит следующим образом
+    parser = YaMusicParser()
+    parser.save_dir = 'D:\\Music\\'
+    parser.profile = 'Default'
+    parser.user_data = r'C:\\Users\\Сергей\\AppData\\Local\\Google\\Chrome\\User Data'
+    
+    parser.start()
+    # Parsing
+    parser.close()
+    
+Парсить можно как отдельные треки, так и альбомы, артистов, лейблы
+    browse(url, timeout=None) -> None
+        Открывает переданную ссылку в текущей вкладке.
+        Если установлен timeout для загрузки страницы, после истечения времени будет выброшено исключение TimeoutError
+        
+    get_buttons() -> (WebElement, )
+        Возвращает кортеж кнопок для скачивания на открытой странице
+        
+    donwload(button) -> album_id, track_id
+        Скачивает трек на открытой странице, кнопку для скачивания которого передали, в папку save_dir
+            и возвращает id трека и id альбома, благодаря которым позднее можно будет допарсить всю необходимую 
+            информацию
+        Во время скачивания лучше не трогать скролбар и поменьше активничать на странице, чтобы не помешать корректной
+            работе парсера
+        
+    get_track() -> artists_id, name, number_in_album
+        Используется исключительно вместе со ссылкой вида /album/album_id/track/track_id
+    
+    get_album() -> cover, name, year, genres, artists_id, label_id
+        Используется со ссылками вида /album/album_id и /album/album_id/track/track_id
+        
+    get_artist() -> name, avatar
+        Используется со ссылками вида /artist/artist_id
+        
+    get_label() -> name
+        Используется со ссылками вида /label/label_id
+"""
 
 
 class YaMusicParser:
-    """mode: simple - required any yandex music page where is list of tracks
-             predefined - required /tracks url
-    """
-    def __init__(self, url, mode='simple'):
-        self.mode = mode
-        self.__url = url
 
-        self.__save_dir = 'D:\\Music\\'
-        self.__download_button = '_music_save_button'
+    def __init__(self):
+        # You must use format like this 'D:\\Music\\'
+        self.__save_dir = None
+        self.profile = 'Default'
+        self.user_data = r'C:\Users\Сергей\AppData\Local\Google\Chrome\User Data'
 
-        self.opt = webdriver.ChromeOptions()
+        self.__browser = None
+
+    def start(self):
+        opt = webdriver.ChromeOptions()
         prefs = {
-            "download.default_directory": 'D:\\Music\\',
+            "download.default_directory": f'{self.__save_dir}',
             "download.prompt_for_download": False,
             "download.directory_upgrade": True
         }
-        self.opt.add_experimental_option("prefs", prefs)
-        self.opt.add_argument(r'--profile-directory=Default')
-        self.opt.add_argument(r"--user-data-dir=C:\Users\Сергей\AppData\Local\Google\Chrome\User Data")
+        opt.add_experimental_option("prefs", prefs)
+        opt.add_argument(rf'--profile-directory={self.profile}')
+        opt.add_argument(rf"--user-data-dir={self.user_data}")
         # self.opt.add_extension('..\\..\\resources\\HFOFHOFFDCFCJGMILKPNHKAMCGEMABAN_2_0_8_0.crx')
 
-        self.browser = webdriver.Chrome(options=self.opt)
-        self.browser.set_page_load_timeout(1000)
+        self.__browser = webdriver.Chrome(options=opt)
 
-    # Beware of TimeoutException
-    def browse(self):
+    def close(self):
+        self.__browser.quit()
+
+    @property
+    def save_dir(self):
+        return self.__save_dir
+
+    @save_dir.setter
+    def save_dir(self, directory):
+        if os.path.exists(directory):
+            self.__save_dir = directory
+        else:
+            raise FileNotFoundError
+
+    # If set timeout, beware TimeoutError
+    def browse(self, url, timeout: int = None):
+        if timeout is not None:
+            self.__browser.set_page_load_timeout(timeout)
         try:
-            self.browser.get(self.__url)
+            self.__browser.get(url)
         except TimeoutException:
-            raise TimeoutError('Current page load timeout: ', 1000)
+            raise TimeoutError
 
     def get_buttons(self):
-        return self.browser.find_elements(By.ID, self.__download_button)
+        return self.__browser.find_elements(By.ID, '_music_save_button')
 
-    # Click button and download track into self.save_dir. Return album id, track id
-    def download(self, button) -> (str, str):
+    # Click button and download track into self.save_dir. Return track info
+    @staticmethod
+    def download(button):
         # Because button will updated and I need observe it
         parent = button.find_element(By.XPATH, "./..")
 
-        # Get album id
+        # Get album id, it needs to further parsing
+        album = None
         while True:
             try:
                 album = parent.find_element(By.XPATH, "./../a[@class='d-track__title deco-link deco-link_stronger']")
@@ -69,145 +129,103 @@ class YaMusicParser:
         # Waiting for download
         while True:
             try:
-                button = parent.find_element(By.ID, self.__download_button)
+                button = parent.find_element(By.ID, '_music_save_button')
                 if button.text == '100%':
                     break
             except StaleElementReferenceException:
                 pass
 
-        # Album id, Track id, Track name
+        # Album id, Track id
         return album.get_attribute('href').split('/')[4], album.get_attribute('href').split('/')[6]
 
     # Only with link like /album/album_id/track/track_id
     def get_track(self):
-        side_bar = self.browser.find_element(By.XPATH, "//div[@class='sidebar__placeholder sidebar__sticky']")
+        side_bar = self.__browser.find_element(By.XPATH, "//div[@class='sidebar__placeholder sidebar__sticky']")
         span = side_bar.find_element(By.XPATH, "//span[@class='d-artists']")
         artist_list = span.find_elements(By.XPATH, "//a[@class='d-link deco-link']")
-        artists = []
+        artists_id = []
         for artist in artist_list:
-            artists.append(artist.get_attribute('href').split('/')[4])
+            artists_id.append(artist.get_attribute('href').split('/')[4])
 
-        name = self.browser.find_element(By.XPATH, "//div[@class='d-track__name']").get_attribute('title')
+        name = self.__browser.find_element(By.XPATH, "//div[@class='d-track__name']").get_attribute('title')
 
-        album_num = self.browser.find_element(By.XPATH, "//div[@class='d-track typo-track d-track_selectable"
-                                                        " d-track_inline-meta _music_ready']").get_attribute('data-id')
-        return artists, name, album_num
+        number_in_album = self.__browser.find_element(By.XPATH, "//div[@class='d-track typo-track d-track_selectable"
+                                                                " d-track_inline-meta _music_ready']") \
+            .get_attribute('data-id')
+
+        return artists_id, name, number_in_album
 
     # Only on album's page
     def get_album(self):
-        cover = self.browser.find_element(By.XPATH, "//img[@class='entity-cover__image deco-pane']")\
+        cover = self.__browser.find_element(By.XPATH, "//img[@class='entity-cover__image deco-pane']") \
             .get_attribute('src')
 
-        information_div = self.browser.find_element(By.XPATH, "//div[@class='d-generic-page-head__main-top']")
+        information_div = self.__browser.find_element(By.XPATH, "//div[@class='d-generic-page-head__main-top']")
         name = information_div.find_element(By.XPATH, "//span[@class='deco-typo']").text
-        is_single = information_div.find_element(By.XPATH, "//span[@class='stamp__entity']").text
+        # is_single = information_div.find_element(By.XPATH, "//span[@class='stamp__entity']").text
         year = information_div.find_element(By.XPATH, "//span[@class='typo deco-typo-secondary']").text
 
-        genre = []
+        genres = []
         for g in information_div.find_elements(By.XPATH, "//a[@class='d-link deco-link deco-link_mimic typo']"):
-            genre.append(g.text)
+            genres.append(g.text)
 
-        artists = []
+        artists_id = []
         for a in information_div.find_elements(By.XPATH, "//a[@class='page-album__artists-short']"):
-            artists.append(a.get_attribute('href').split('/')[4])
+            artists_id.append(a.get_attribute('href').split('/')[4])
 
-        label = []
-        label_div = self.browser.find_element(By.XPATH, "//div[@class='page-album__label']")
+        label_id = []
+        label_div = self.__browser.find_element(By.XPATH, "//div[@class='page-album__label']")
         for lbl in label_div.find_elements(By.XPATH, "//a[@class='d-link deco-link']"):
-            label.append(lbl.get_attribute('href'))
+            label_id.append(lbl.get_attribute('href'))
 
-        return cover, name, is_single, year, genre, artists, label
+        return cover, name, year, genres, artists_id, label_id
 
     # Only on artist page
     def get_artist(self):
-        name = self.browser.find_element(By.XPATH, "//h1[@class='page-artist__title typo-h1 typo-h1_big']").text
+        name = self.__browser.find_element(By.XPATH, "//h1[@class='page-artist__title typo-h1 typo-h1_big']").text
         try:
-            avatar = self.browser.find_element(By.XPATH, "//img[@class='artist-pics__pic']") \
+            avatar = self.__browser.find_element(By.XPATH, "//img[@class='artist-pics__pic']") \
                 .get_attribute('src')
-        except:
-            avatar = self.browser.find_element(By.XPATH, "//img[@class='artist-pics__pic artist-pics__pic_empty']") \
+        except Exception:
+            avatar = self.__browser.find_element(By.XPATH, "//img[@class='artist-pics__pic artist-pics__pic_empty']") \
                 .get_attribute('src')
 
         return name, avatar
 
     # Only on label's page
     def get_label(self):
-        name = self.browser.find_element(By.XPATH, "//div[@class='page-label__title']")\
+        name = self.__browser.find_element(By.XPATH, "//div[@class='page-label__title']") \
             .find_element(By.TAG_NAME, "h1").text
 
         return name
 
-    @property
-    def url(self):
-        return self.__url
 
-    @url.setter
-    def url(self, url):
-        if self._match(url):
-            self.__url = url
+class LinkPatterns(Enum):
+    TRACK = r'https://music\.yandex\.ru/album/(\d+)/track/(\d+)'
+    ARTIST = None
+    ALBUM = None
+    LABEL = None
 
-    # check links
-    def _match(self, link: str):
-        modes = {'predefined': r'https://music\.yandex\.ru/artist/\d+/tracks$',
-                 'simple': r'https://music\.yandex\.ru/'}
 
-        if not re.match(modes.get(self.mode), link):
-            raise UnknownLink(link, 'Please, read about modes')
+class ParserSelector:
+    def __init__(self):
+        self.patterns = {}
+
+    def define_link(self, link):
+        pass
 
 
 def main():
-    parser = YaMusicParser('https://music.yandex.ru/artist/8855006/tracks', 'predefined')
-    try:
-        parser.browse()
-    except TimeoutError:
-        return
+    match = re.match(LinkPatterns.TRACK.value, '')
 
-    for elem in parser.get_buttons():
-        alb, track_id, track_name = parser.download(elem)
-        # writing into db
-        print('id трека', track_id)
-        print('название', track_name)
-        print('id альбома', alb, end='\n\n')
-
-    # Get list of links from db
-    links = ('https://music.yandex.ru/album/20448306/track/98462689', )
-    for link in links:
-        parser.url = link
-        try:
-            parser.browse()
-            tracks = parser.get_track()
-            for track in tracks:
-                # writing in db track information
-                pass
-        except TimeoutException:
-            return
+    if match:
+        album_id = match.group(1)
+        track_id = match.group(2)
+        print("Album ID:", album_id)
+        print("Track ID:", track_id)
+    else:
+        print("Ссылка не соответствует шаблону.")
 
 
 if __name__ == '__main__':
-    """ Есть два способа парсинга:
-            Первый - просто скачать треки. Тогда подойдет любая ссылка на яндекс музыку, где есть
-                список треков.
-            Второй - парсинг по предопределенному сценарию:
-            
-        Предопределенный сценарий состоит из двух этапов:
-            1. Загрузка треков по ссылке вида https://music.yandex.ru/artist/artist_id/tracks
-            2. Догрузка информации по ссылке вида https://music.yandex.ru/album/album_id/track/track_id
-            
-            Пример:
-                parser = YaMusicParser('https://music.yandex.ru/artist/8855006/tracks', 'predefined')
-                try:
-                    parser.browse()
-                except TimeoutException:
-                    return
-            
-                for elem in parser.get_buttons():
-                    alb, track_id, track_name = parser.download(elem)
-                    # writing into db
-                    
-                    
-                   
-        
-        
-    """
-
     main()
