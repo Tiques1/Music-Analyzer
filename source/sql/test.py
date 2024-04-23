@@ -14,7 +14,17 @@ cursor = db.cursor()
 # """)
 # cursor.execute('alter table track alter artist drop not null')
 
-cursor.execute('select * from track')
+cursor.execute("""SELECT
+    column_name,
+    data_type
+FROM
+    information_schema.columns
+WHERE
+    table_name = 'track';""")
+
+cursor.execute("""
+alter table track drop column year
+""")
 db.commit()
 print(cursor.fetchall())
 

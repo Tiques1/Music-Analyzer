@@ -8,3 +8,7 @@ class UnknownLink(LinkError):
 
 class GetError(LinkError):
     pass
+
+
+class WrongLink(LinkError):
+    pass

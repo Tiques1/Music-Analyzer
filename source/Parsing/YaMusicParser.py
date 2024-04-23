@@ -3,7 +3,7 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, \
     ElementClickInterceptedException
 import os
-from enum import Enum
+from source.Parsing.Exceptions import UnknownLink, WrongLink
 import re
 
 """
@@ -60,6 +60,8 @@ class YaMusicParser:
 
         self.__browser = None
 
+        self.__method = None
+
     def start(self):
         opt = webdriver.ChromeOptions()
         prefs = {
@@ -90,12 +92,14 @@ class YaMusicParser:
 
     # If set timeout, beware TimeoutError
     def browse(self, url, timeout: int = None):
+        self._check(url)
         if timeout is not None:
             self.__browser.set_page_load_timeout(timeout)
         try:
             self.__browser.get(url)
         except TimeoutException:
             raise TimeoutError
+        return self.__method
 
     def get_buttons(self):
         return self.__browser.find_elements(By.ID, '_music_save_button')
@@ -140,6 +144,9 @@ class YaMusicParser:
 
     # Only with link like /album/album_id/track/track_id
     def get_track(self):
+        if self.__method != 'track':
+            raise WrongLink('Link must look like /album/album_id/track/track_id')
+
         side_bar = self.__browser.find_element(By.XPATH, "//div[@class='sidebar__placeholder sidebar__sticky']")
         span = side_bar.find_element(By.XPATH, "//span[@class='d-artists']")
         artist_list = span.find_elements(By.XPATH, "//a[@class='d-link deco-link']")
@@ -157,6 +164,9 @@ class YaMusicParser:
 
     # Only on album's page
     def get_album(self):
+        if self.__method not in ('album', 'track'):
+            raise WrongLink('Link must look like /album/album_id/track/track_id or /album/album_id')
+
         cover = self.__browser.find_element(By.XPATH, "//img[@class='entity-cover__image deco-pane']") \
             .get_attribute('src')
 
@@ -182,6 +192,9 @@ class YaMusicParser:
 
     # Only on artist page
     def get_artist(self):
+        if self.__method != 'artist':
+            raise WrongLink('Link must look like /artist/artist_id')
+
         name = self.__browser.find_element(By.XPATH, "//h1[@class='page-artist__title typo-h1 typo-h1_big']").text
         try:
             avatar = self.__browser.find_element(By.XPATH, "//img[@class='artist-pics__pic']") \
@@ -194,37 +207,62 @@ class YaMusicParser:
 
     # Only on label's page
     def get_label(self):
+        if self.__method != 'label':
+            raise WrongLink('Link must look like /label/label_id')
+
         name = self.__browser.find_element(By.XPATH, "//div[@class='page-label__title']") \
             .find_element(By.TAG_NAME, "h1").text
 
         return name
 
+    def _check(self, url):
+        method = None
+        for pattern in LINKTYPE.keys():
+            if re.match(pattern, url):
+                method = LINKTYPE.get(pattern)
+        if method is None:
+            raise UnknownLink
+        self.__method = method
 
-class LinkPatterns(Enum):
-    TRACK = r'https://music\.yandex\.ru/album/(\d+)/track/(\d+)'
-    ARTIST = None
-    ALBUM = None
-    LABEL = None
 
-
-class ParserSelector:
-    def __init__(self):
-        self.patterns = {}
-
-    def define_link(self, link):
-        pass
+LINKTYPE = {
+    r'https://music\.yandex\.ru/album/(\d+)/track/(\d+)': 'track',
+    r'https://music\.yandex\.ru/artist/(\d+)': 'artist',
+    r'https://music\.yandex\.ru/album/(\d+)': 'album',
+    r'https://music\.yandex\.ru/label/(\d+)': 'label',
+    r'https://music\.yandex\.ru/artist/(\d+)/tracks': 'track'
+}
 
 
 def main():
-    match = re.match(LinkPatterns.TRACK.value, '')
+    parser = YaMusicParser()
+    parser.save_dir = 'D:\\Music\\'
+    parser.profile = 'Default'
+    parser.user_data = r'C:\\Users\\Сергей\\AppData\\Local\\Google\\Chrome\\User Data'
 
-    if match:
-        album_id = match.group(1)
-        track_id = match.group(2)
-        print("Album ID:", album_id)
-        print("Track ID:", track_id)
-    else:
-        print("Ссылка не соответствует шаблону.")
+    parser.start()
+    try:
+        link_type = parser.browse('https://music.yandex.ru/artist/8855006/tracks')
+    except UnknownLink as e:
+        print(e)
+
+    for button in parser.get_buttons():
+        a, b = parser.download(button)
+        print(a, b)
+        try:
+            parser.get_artist()
+        except WrongLink as e:
+            print(e)
+    parser.close()
+    # match = re.match(LinkPatterns.TRACK.value, '')
+    #
+    # if match:
+    #     album_id = match.group(1)
+    #     track_id = match.group(2)
+    #     print("Album ID:", album_id)
+    #     print("Track ID:", track_id)
+    # else:
+    #     print("Ссылка не соответствует шаблону.")
 
 
 if __name__ == '__main__':
