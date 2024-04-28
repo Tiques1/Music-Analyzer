@@ -72,9 +72,14 @@ class Crawler(Log):
         for i in link[1]:
             alb_id, track_id = self.parser.download(buttons[int(i)])
             self.log('alb_id=', alb_id, 'track_id', track_id, 'downloaded')
+
             if self.database.check_if_exist(track_id, 'track') is None:
                 self.database.exec(f'insert into track values ({track_id}, null, null, {alb_id}, null)')
-                self.log('alb_id=', alb_id, 'track_id', track_id, 'saved to database')
+                self.log('track_id', track_id, 'saved to database')
+
+            if self.database.check_if_exist(alb_id, 'album') is None:
+                self.database.exec(f'insert into album values ({alb_id}, null, null, null, null, null)')
+                self.log('alb_id=', alb_id, 'saved to database')
 
     def fill_album(self):
         pass
