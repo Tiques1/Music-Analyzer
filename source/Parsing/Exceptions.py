@@ -12,3 +12,7 @@ class GetError(LinkError):
 
 class WrongLink(LinkError):
     pass
+
+
+class IncorrectlySpecified(LinkError):
+    pass

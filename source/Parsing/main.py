@@ -1,6 +1,6 @@
 from YaMusicParser import YaMusicParser
 from metadata import Track
-from db_writer import DBHelper
+from DBHelper import DBHelper
 import os
 
 parser = YaMusicParser()

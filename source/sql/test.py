@@ -22,9 +22,9 @@ FROM
 WHERE
     table_name = 'track';""")
 
-cursor.execute("""
-alter table track drop column year
-""")
+# cursor.execute("""
+# alter table track drop column year
+# """)
 db.commit()
 print(cursor.fetchall())
 

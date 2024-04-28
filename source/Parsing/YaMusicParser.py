@@ -221,7 +221,7 @@ class YaMusicParser:
             if re.match(pattern, url):
                 method = LINKTYPE.get(pattern)
         if method is None:
-            raise UnknownLink
+            raise UnknownLink(url)
         self.__method = method
 
 
@@ -241,18 +241,18 @@ def main():
     parser.user_data = r'C:\\Users\\Сергей\\AppData\\Local\\Google\\Chrome\\User Data'
 
     parser.start()
-    try:
-        link_type = parser.browse('https://music.yandex.ru/artist/8855006/tracks')
+    try:  # https://music.yandex.ru/artist/8855006/tracks
+        link_type = parser.browse('https://music.yandex.ru/album/21186391/track/100526201')
     except UnknownLink as e:
         print(e)
 
     for button in parser.get_buttons():
-        a, b = parser.download(button)
-        print(a, b)
-        try:
-            parser.get_artist()
-        except WrongLink as e:
-            print(e)
+        alb_id, track_id = parser.download(button)
+        print(alb_id, track_id)
+        # try:
+        #     parser.get_artist()
+        # except WrongLink as e:
+        #     print(e)
     parser.close()
     # match = re.match(LinkPatterns.TRACK.value, '')
     #
