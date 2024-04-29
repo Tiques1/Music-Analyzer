@@ -54,20 +54,6 @@
 <colAssociation fkAssociation="FC89D393-F513-7B37-5A1B-CFFC06877FDF" referredColumn="CC510E23-8500-7255-C668-0431B76B01FD"/>
 </associations>
 </Column>
-<Column name="artist" id="5BD47485-0E31-320F-2309-E95E8956CD6D">
-<createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:13:27 UTC</createdTime>
-<ownerDesignName>database</ownerDesignName>
-<useDomainConstraints>false</useDomainConstraints>
-<use>1</use>
-<logicalDatatype>LOGDT011</logicalDatatype>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-<previousColumn>false</previousColumn>
-<autoIncrementCycle>false</autoIncrementCycle>
-<associations>
-<colAssociation fkAssociation="EFA606C7-AA33-8193-AAC1-1E8F4492FB77" referredColumn="70DFA8F0-22F5-A99D-305D-AE217FBD56A0"/>
-</associations>
-</Column>
 <Column name="genre" id="7FFAD670-5B3D-9DC7-D31E-2390EB956078">
 <createdBy>Сергей</createdBy>
 <createdTime>2024-04-21 14:14:23 UTC</createdTime>
@@ -113,16 +99,6 @@
 <isSurrogateKey>false</isSurrogateKey>
 <indexColumnUsage>
 <colUsage columnID="AFC300E4-D147-5F66-2679-4C46C327055C"/>
-</indexColumnUsage>
-</ind_PK_UK>
-<ind_PK_UK id="70E59FBB-E56B-AC1B-DF60-3DF98367A0D7" name="album_Artist_FK">
-<createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:13:27 UTC</createdTime>
-<ownerDesignName>database</ownerDesignName>
-<indexState>Foreign Key</indexState>
-<isSurrogateKey>false</isSurrogateKey>
-<indexColumnUsage>
-<colUsage columnID="5BD47485-0E31-320F-2309-E95E8956CD6D"/>
 </indexColumnUsage>
 </ind_PK_UK>
 <ind_PK_UK id="C9B1372F-809C-EA55-FBBD-171F8A50E53F" name="album_genre_FK">

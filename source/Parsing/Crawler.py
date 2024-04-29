@@ -74,14 +74,14 @@ class Crawler(Log):
                 await self.log(link, e)
                 continue
 
-            await self.log('alb_id=', alb_id, 'track_id', track_id, 'downloaded')
+            await self.log('alb_id', alb_id, 'track_id', track_id, 'downloaded')
 
             if await self.database.check_if_exist(track_id, 'track') is None:
-                await self.database.exec(f'insert into track values ({track_id}, null, null, {alb_id}, null)')
+                await self.database.exec(f'insert into track values ({track_id}, null, null, {alb_id})')
                 await self.log('track_id', track_id, 'saved to database')
 
             if await self.database.check_if_exist(alb_id, 'album') is None:
-                await self.database.exec(f'insert into album values ({alb_id}, null, null, null, null, null)')
+                await self.database.exec(f'insert into album values ({alb_id}, null, null, null, null)')
                 await self.log('alb_id', alb_id, 'saved to database')
 
     def fill_album(self):

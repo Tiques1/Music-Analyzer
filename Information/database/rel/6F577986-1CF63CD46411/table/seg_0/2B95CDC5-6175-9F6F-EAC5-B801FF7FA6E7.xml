@@ -54,20 +54,6 @@
 <colAssociation fkAssociation="B85AE79F-4A15-0AB0-1FA8-8F65808D28FF" referredColumn="9823709B-E3E2-8D08-A1B5-7227FA4936A7"/>
 </associations>
 </Column>
-<Column name="artist" id="9FB70021-83E1-A1E3-4F45-519EEC337520">
-<createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:18:40 UTC</createdTime>
-<ownerDesignName>database</ownerDesignName>
-<useDomainConstraints>false</useDomainConstraints>
-<use>1</use>
-<logicalDatatype>LOGDT011</logicalDatatype>
-<ownDataTypeParameters>,,</ownDataTypeParameters>
-<previousColumn>false</previousColumn>
-<autoIncrementCycle>false</autoIncrementCycle>
-<associations>
-<colAssociation fkAssociation="BD180942-3076-EB4E-E8A9-4E6156DE4352" referredColumn="70DFA8F0-22F5-A99D-305D-AE217FBD56A0"/>
-</associations>
-</Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
 <ind_PK_UK id="DFBE12CF-9C23-3A06-D29C-BBD1BDC6C42E" name="track_PK">
@@ -99,16 +85,6 @@
 <isSurrogateKey>false</isSurrogateKey>
 <indexColumnUsage>
 <colUsage columnID="939E1C1D-38DB-79B3-0DF4-0C89AC01B1D8"/>
-</indexColumnUsage>
-</ind_PK_UK>
-<ind_PK_UK id="8CE838FE-93D9-24BF-8BE2-47CC4D606C85" name="track_Artist_FK">
-<createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:18:40 UTC</createdTime>
-<ownerDesignName>database</ownerDesignName>
-<indexState>Foreign Key</indexState>
-<isSurrogateKey>false</isSurrogateKey>
-<indexColumnUsage>
-<colUsage columnID="9FB70021-83E1-A1E3-4F45-519EEC337520"/>
 </indexColumnUsage>
 </ind_PK_UK>
 </indexes>

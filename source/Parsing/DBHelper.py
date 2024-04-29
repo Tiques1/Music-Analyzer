@@ -25,7 +25,7 @@ class DBHelper:
 
 async def main():
     db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
-    await db.exec('select * from autorship')
+    await db.exec('select artist from track')
     result = await db.fetch()
     print(result)
 

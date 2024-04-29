@@ -19,7 +19,7 @@
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 <associations>
-<colAssociation fkAssociation="71D8C346-6AD7-188F-5F87-5BECF20642BF" referredColumn="9375D9FB-ACCE-63CC-34AA-2876599F0101"/>
+<colAssociation fkAssociation="B83D6FBE-A379-C762-2877-655F05E51F4E" referredColumn="9823709B-E3E2-8D08-A1B5-7227FA4936A7"/>
 </associations>
 </Column>
 <Column name="artist" id="E73B2081-0283-0299-86CA-776A74BAF752">
@@ -38,16 +38,6 @@
 </Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
-<ind_PK_UK id="011BA401-3E14-938A-76DE-1EFD263B0032" name="fk_autorship_album">
-<createdBy>Сергей</createdBy>
-<createdTime>2024-04-29 20:07:20 UTC</createdTime>
-<ownerDesignName>database</ownerDesignName>
-<indexState>Foreign Key</indexState>
-<isSurrogateKey>false</isSurrogateKey>
-<indexColumnUsage>
-<colUsage columnID="495C06C6-F682-F532-9119-E865047CE2E6"/>
-</indexColumnUsage>
-</ind_PK_UK>
 <ind_PK_UK id="39A32100-220A-32ED-DF10-80B251F33B84" name="fk_autorship_artistv2">
 <createdBy>Сергей</createdBy>
 <createdTime>2024-04-29 20:07:20 UTC</createdTime>
@@ -56,6 +46,16 @@
 <isSurrogateKey>false</isSurrogateKey>
 <indexColumnUsage>
 <colUsage columnID="E73B2081-0283-0299-86CA-776A74BAF752"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="7D75A4E0-3145-9415-D574-BCA1ADAE21B1" name="album_autorship_album_FK">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-29 20:24:10 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="495C06C6-F682-F532-9119-E865047CE2E6"/>
 </indexColumnUsage>
 </ind_PK_UK>
 </indexes>
