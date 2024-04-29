@@ -1,3 +1,4 @@
+import asyncio
 import psycopg2
 
 
@@ -6,21 +7,37 @@ class DBHelper:
         self.con = psycopg2.connect(database=database, user=user, password=password, host=host)
         self.cur = self.con.cursor()
 
-    def exec(self, command):
+    async def exec(self, command):
         self.cur.execute(command)
         self.con.commit()
 
-    def fetch(self):
+    async def fetch(self):
         return self.cur.fetchone()
 
-    def check_if_exist(self, id_, table):
-        self.exec(f'select * from {table} where id = {id_}')
-        return self.fetch()
+    async def check_if_exist(self, id_, table):
+        await self.exec(f'select * from {table} where id = {id_}')
+        return await self.fetch()
 
     def __del__(self):
         self.cur.close()
         self.con.close()
 
 
+async def main():
+    db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
+    await db.exec('select * from autorship')
+    result = await db.fetch()
+    print(result)
+
 if __name__ == '__main__':
-    pass
+    asyncio.run(main())
+    # db.exec('truncate table track')
+    # asyncio.run(db.exec("""
+    # create table album_autorship (
+    #     album integer,
+    #     artist integer,
+    #
+    #     constraint fk_autorship_album foreign key (album) references album(id),
+    #     constraint fk_autorship_artist foreign key (artist) references artist(id)
+    # )
+    # """))

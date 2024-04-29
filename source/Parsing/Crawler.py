@@ -1,6 +1,5 @@
 from source.Parsing.YaMusicParser import YaMusicParser
 from source.Parsing.Exceptions import UnknownLink, IncorrectlySpecified
-import queue
 import asyncio
 import datetime
 from source.Parsing.DBHelper import DBHelper
@@ -10,7 +9,7 @@ class Log:
     def __init__(self):
         self.log_file = 'log.txt'
 
-    def log(self, *args):
+    async def log(self, *args):
         with open(self.log_file, 'a') as log_file:
             msg = str(datetime.datetime.now()) + ' '
             for arg in args:
@@ -25,61 +24,65 @@ class Crawler(Log):
         self.parser = parser
         self.database = DBHelper(database="music", user="postgres", password="1111", host='localhost')
 
-        self.__links = queue.Queue()
         self.parser.start()
 
-    def get_link(self):
-        return self.__links.get()
-
-    def put_link(self, link):
-        self.__links.put(link)
-
-    async def read_links(self, file_path):
+    @staticmethod
+    def read_link(file_path):
         with open(file_path, 'r') as file:
-            link = file.readline()
-            while link:
-                if self.__links.qsize() < 10:
-                    self.put_link(link)
-                    link = file.readline()
+            for link in file:
+                yield link
 
     @staticmethod
     def _prepare(link):
-        splitted = link.split(' ')
-        if len(splitted) > 2:
-            raise IncorrectlySpecified(link)
-        if ';' in splitted[1]:
-            return splitted[0], (splitted[1].split(';'))
-        else:
-            ranges = splitted[1].split(',')[0].split('-')
-            indexes = []
-            for i in range(int(ranges[0]), int(ranges[1]), int(splitted[1].split(',')[1])):
-                indexes.append(i)
-            return splitted[0], indexes
+        try:
+            splitted = link.split(' ')
+            if len(splitted) > 2:
+                raise IncorrectlySpecified(link)
+            if ';' in splitted[1]:
+                return splitted[0], (splitted[1].split(';'))
+            else:
+                ranges = splitted[1].split(',')[0].split('-')
+                indexes = []
+                for i in range(int(ranges[0]), int(ranges[1]), int(splitted[1].split(',')[1])):
+                    indexes.append(i)
+                return splitted[0], indexes
+        except Exception:
+            raise IncorrectlySpecified
 
     # Fill track table and download tracks
-    def fill_track(self, link):
-        if link is None:
+    async def fill_track(self, link):
+        try:
+            link = self._prepare(link)
+        except IncorrectlySpecified as e:
+            await self.log(link, e)
             return
-        link = self._prepare(link)
 
         try:
             self.parser.browse(link[0])
         except (UnknownLink, TimeoutError) as e:
-            self.log(e)
+            await self.log(e)
             return
 
         buttons = self.parser.get_buttons()
+        while not buttons:
+            buttons = self.parser.get_buttons()
+
         for i in link[1]:
-            alb_id, track_id = self.parser.download(buttons[int(i)])
-            self.log('alb_id=', alb_id, 'track_id', track_id, 'downloaded')
+            try:
+                alb_id, track_id = self.parser.download(buttons[int(i)])
+            except IndexError as e:
+                await self.log(link, e)
+                continue
 
-            if self.database.check_if_exist(track_id, 'track') is None:
-                self.database.exec(f'insert into track values ({track_id}, null, null, {alb_id}, null)')
-                self.log('track_id', track_id, 'saved to database')
+            await self.log('alb_id=', alb_id, 'track_id', track_id, 'downloaded')
 
-            if self.database.check_if_exist(alb_id, 'album') is None:
-                self.database.exec(f'insert into album values ({alb_id}, null, null, null, null, null)')
-                self.log('alb_id=', alb_id, 'saved to database')
+            if await self.database.check_if_exist(track_id, 'track') is None:
+                await self.database.exec(f'insert into track values ({track_id}, null, null, {alb_id}, null)')
+                await self.log('track_id', track_id, 'saved to database')
+
+            if await self.database.check_if_exist(alb_id, 'album') is None:
+                await self.database.exec(f'insert into album values ({alb_id}, null, null, null, null, null)')
+                await self.log('alb_id', alb_id, 'saved to database')
 
     def fill_album(self):
         pass
@@ -102,12 +105,8 @@ async def main():
 
     crawler = Crawler(parser)
 
-    await crawler.read_links('links.txt')
-
-    link = crawler.get_link()
-    while link:
-        crawler.fill_track(link)
-        link = crawler.get_link()
+    for link in crawler.read_link('links.txt'):
+        await crawler.fill_track(link)
 
 
 if __name__ == '__main__':

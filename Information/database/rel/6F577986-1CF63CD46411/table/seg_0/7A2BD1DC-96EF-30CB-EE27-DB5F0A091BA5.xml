@@ -1,0 +1,62 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="7A2BD1DC-96EF-30CB-EE27-DB5F0A091BA5" name="autorship">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-29 20:01:46 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<ordsAlias>table_6</ordsAlias>
+<allowColumnReorder>false</allowColumnReorder>
+<existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
+<parsed>true</parsed>
+<columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
+<Column name="track" id="C92B23B4-8DE8-CE34-D340-CEE5D9087A1D">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-29 20:02:47 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="32B7F18D-0250-0DA3-7EC1-350AF44F5E76" referredColumn="9375D9FB-ACCE-63CC-34AA-2876599F0101"/>
+</associations>
+</Column>
+<Column name="artist" id="DEA2C4F2-A92F-02FA-350C-8057E0B4ACDE">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-29 20:02:47 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>LOGDT011</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+<associations>
+<colAssociation fkAssociation="CBC1ABD4-EA0A-A579-C232-26EE05FEC01E" referredColumn="70DFA8F0-22F5-A99D-305D-AE217FBD56A0"/>
+</associations>
+</Column>
+</columns>
+<indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
+<ind_PK_UK id="2C5339C7-6E66-BEF6-F0A1-098B71CB7527" name="fk_autorship_track">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-29 20:04:42 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="C92B23B4-8DE8-CE34-D340-CEE5D9087A1D"/>
+</indexColumnUsage>
+</ind_PK_UK>
+<ind_PK_UK id="C773ADB9-D6B4-6645-E255-5D3445B27AAA" name="fk_autorship_artist">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-04-29 20:04:42 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<indexState>Foreign Key</indexState>
+<isSurrogateKey>false</isSurrogateKey>
+<indexColumnUsage>
+<colUsage columnID="DEA2C4F2-A92F-02FA-350C-8057E0B4ACDE"/>
+</indexColumnUsage>
+</ind_PK_UK>
+</indexes>
+</Table>
