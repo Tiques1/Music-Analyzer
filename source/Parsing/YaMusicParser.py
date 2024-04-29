@@ -215,6 +215,7 @@ class YaMusicParser:
 
         return name
 
+    # Every function will work only if __method has correspondig value
     def _check(self, url):
         method = None
         for pattern in LINKTYPE.keys():

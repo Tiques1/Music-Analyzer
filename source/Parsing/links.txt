@@ -1,2 +1,2 @@
-https://music.yandex.ru/artist/8855006/tracks 1-4,1
+https://music.yandex.ru/artist/8855006/tracks 0-10,3
 https://music.yandex.ru/album/21186391/track/100526201 0;1;2
