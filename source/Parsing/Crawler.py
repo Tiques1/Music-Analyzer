@@ -3,6 +3,8 @@ from source.Parsing.Exceptions import UnknownLink, IncorrectlySpecified
 import asyncio
 import datetime
 from source.Parsing.DBHelper import DBHelper
+from FileRenamer import FileRenamer
+import threading
 
 
 class Log:
@@ -19,10 +21,11 @@ class Log:
 
 
 class Crawler(Log):
-    def __init__(self, parser: YaMusicParser):
+    def __init__(self, parser: YaMusicParser, file_renamer):
         super().__init__()
         self.parser = parser
         self.database = DBHelper(database="music", user="postgres", password="1111", host='localhost')
+        self.file_renamer = file_renamer
 
         self.parser.start()
 
@@ -76,6 +79,8 @@ class Crawler(Log):
 
             await self.log('alb_id', alb_id, 'track_id', track_id, 'downloaded')
 
+            self.file_renamer.rename(track_id)
+
             if await self.database.check_if_exist(track_id, 'track') is None:
                 await self.database.exec(f'insert into track values ({track_id}, null, null, {alb_id})')
                 await self.log('track_id', track_id, 'saved to database')
@@ -103,7 +108,11 @@ async def main():
     parser.profile = 'Default'
     parser.user_data = r'C:\\Users\\Сергей\\AppData\\Local\\Google\\Chrome\\User Data'
 
-    crawler = Crawler(parser)
+    file_renamer = FileRenamer('D:\\Music\\')
+    crawler = Crawler(parser, file_renamer)
+
+    renamer = threading.Thread(target=file_renamer.mainloop)
+    renamer.start()
 
     for link in crawler.read_link('links.txt'):
         await crawler.fill_track(link)
