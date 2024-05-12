@@ -109,7 +109,7 @@ class Crawler(Log):
 
 async def main():
     parser = YaMusicParser()
-    parser.save_dir = 'D:\\Music\\'
+    parser.save_dir = 'D:\\Music\\Mozart'
     parser.profile = 'Default'
     parser.user_data = r'C:\\Users\\Сергей\\AppData\\Local\\Google\\Chrome\\User Data'
 
