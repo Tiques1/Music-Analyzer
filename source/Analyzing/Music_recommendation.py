@@ -4,6 +4,7 @@
 import os
 import librosa
 import numpy as np
+import joblib
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cluster import KMeans
 
@@ -35,6 +36,15 @@ class Extractor:
         # (song_name, track_features)
         self.song_names = np.array([])
         self.song_vectors = []
+
+        self.song_vectors_np = None
+
+    def values_to_np(self):
+        # Преобразование списков в массивы NumPy
+        vectors_np = [np.array(vector) for vector in self.song_vectors]
+
+        # Преобразование списка массивов NumPy в двумерный массив NumPy
+        self.song_vectors_np = np.array(vectors_np)
 
     @staticmethod
     def add_zero(array):
@@ -89,6 +99,7 @@ class Reccommender:
 
 def find_nearest_points(embeddings, target_point, k=5):
     # Вычисление расстояний между целевой точкой и всеми другими точками
+    # https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html
     distances = np.linalg.norm(embeddings - target_point, axis=1)
 
     # Нахождение индексов точек с наименьшими расстояниями (кроме целевой точки)
@@ -98,11 +109,13 @@ def find_nearest_points(embeddings, target_point, k=5):
 
 
 if __name__ == '__main__':
-    files = Files("D:\\Music\\Mozart")
+    # files = Files("D:\\Music\\Test")
+    #
+    # extractor = Extractor()
+    # extractor.create_songs_base(files.list_files)
+    # extractor.values_to_np()
+    # joblib.dump(extractor, 'exctractor_test.pkl')
 
-    extractor = Extractor()
-    extractor.create_songs_base(files.list_files)
-    print(extractor.song_names)
 
     # recommender = Reccommender(extractor)
     # recommender.recommend_song(r"D:\Music\Paul Mauriat and His Orchestra,Вольфганг Амадей Моцарт - Symphony No. 40 In G Minor K550_ 1. Molto Allegro.mp3",
@@ -110,30 +123,25 @@ if __name__ == '__main__':
     #
     # print(sorted(recommender.similar_tracks, reverse=True, key=lambda x: x[1]))
     # Преобразование одномерных векторов в двумерные с помощью TSNE
-
+    extractor = joblib.load('exctractor_test.pkl')
     # Преобразование списков в массивы NumPy
-    song_vectors_np = [np.array(vector) for vector in extractor.song_vectors]
+    # song_vectors_np = [np.array(vector) for vector in extractor.song_vectors]
+    #
+    # # Преобразование списка массивов NumPy в двумерный массив NumPy
+    # song_vectors_np = np.array(song_vectors_np)
 
-    # Преобразование списка массивов NumPy в двумерный массив NumPy
-    song_vectors_np = np.array(song_vectors_np)
-
-    print(extractor.song_names[34])
+    id = np.where(extractor.song_names == "Johann Sebastian Bach,Voque Session,Laysan Khusniyarova - Cello Suite No. 1 in G Major_ Prélude")
+    print(extractor.song_names[id])
     print('Ближайшие к нему: ')
-    nearest = find_nearest_points(song_vectors_np, song_vectors_np[34])
+    nearest = find_nearest_points(extractor.song_vectors_np, extractor.song_vectors_np[id])
     for i in nearest:
         print(extractor.song_names[i])
-
-
-
-
-
-
 
     # # Создание объекта t-SNE
     # tsne = TSNE(n_components=2, random_state=42, perplexity=5)
     #
     # # Применение t-SNE к массиву векторов признаков
-    # embeddings_2d = tsne.fit_transform(song_vectors_np)
+    # embeddings_2d = tsne.fit_transform(extractor.song_vectors_np)
     #
     # # Создание объекта KMeans для кластеризации
     # kmeans = KMeans(n_clusters=3, random_state=42)
