@@ -92,6 +92,8 @@ class YaMusicParser:
 
     # If set timeout, beware TimeoutError
     def browse(self, url, timeout: int = None):
+        if self.__browser.current_url == url:
+            return
         self._check(url)
         if timeout is not None:
             self.__browser.set_page_load_timeout(timeout)

@@ -5,6 +5,7 @@ import datetime
 from source.Parsing.DBHelper import DBHelper
 from FileRenamer import FileRenamer
 import threading
+# import logging
 
 
 class Log:
@@ -20,11 +21,15 @@ class Log:
             log_file.write(msg)
 
 
+class BaseCrawler:
+    def __init__(self):
+        pass
+
 class Crawler(Log):
-    def __init__(self, parser: YaMusicParser, file_renamer):
+    def __init__(self, parser: YaMusicParser, file_renamer, database):
         super().__init__()
         self.parser = parser
-        self.database = DBHelper(database="music", user="postgres", password="1111", host='localhost')
+        self.database = database
         self.file_renamer = file_renamer
 
         self.parser.start()
@@ -108,14 +113,19 @@ async def main():
     parser.profile = 'Default'
     parser.user_data = r'C:\\Users\\Сергей\\AppData\\Local\\Google\\Chrome\\User Data'
 
+    database = DBHelper(database="music", user="postgres", password="1111", host='localhost')
     file_renamer = FileRenamer('D:\\Music\\')
-    crawler = Crawler(parser, file_renamer)
+    crawler = Crawler(parser, file_renamer, database)
 
     renamer = threading.Thread(target=file_renamer.mainloop)
     renamer.start()
 
     for link in crawler.read_link('links.txt'):
         await crawler.fill_track(link)
+
+
+# Base crawler
+# От текстового формата ссылок к json
 
 
 if __name__ == '__main__':
