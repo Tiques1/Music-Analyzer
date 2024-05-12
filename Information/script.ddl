@@ -13,8 +13,8 @@ CREATE TABLE album (
     id    INTEGER NOT NULL,
     name  text,
     year  DATE,
-    label INTEGER NOT NULL,
-    genre INTEGER NOT NULL
+    label INTEGER,
+    genre INTEGER
 );
 
 ALTER TABLE album ADD CONSTRAINT album_pk PRIMARY KEY ( id );
