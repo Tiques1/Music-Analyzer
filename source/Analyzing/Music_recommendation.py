@@ -2,18 +2,14 @@
 # coding: utf-8
 
 import os
+import time
+
 import librosa
 import numpy as np
 import joblib
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.cluster import KMeans
-
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
-
-from diagrams import Model
-from scipy.spatial.distance import cosine
-# import scipy.stats
 
 
 class Files:
@@ -33,7 +29,6 @@ class Files:
 
 class Extractor:
     def __init__(self):
-        # (song_name, track_features)
         self.song_names = np.array([])
         self.song_vectors = []
 
@@ -64,7 +59,7 @@ class Extractor:
         chroma = librosa.feature.chroma_stft(y=y, sr=sr)
         spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
 
-        # print(len(onset_env), len(tempo), len(melspectrogram), len(mfccs), len(chroma), len(spectral_centroid))
+        print(len(onset_env), len(tempo), len(melspectrogram), len(mfccs), len(chroma), len(spectral_centroid))
         # Создание признакового вектора путем объединения характеристик
         # features = [tempo[0], np.mean(melspectrogram), np.mean(mfccs), np.mean(chroma), np.mean(spectral_centroid)]
         features = np.concatenate((np.array([tempo[0]]), np.concatenate(melspectrogram), np.concatenate(mfccs),
@@ -81,29 +76,13 @@ class Extractor:
             self.song_vectors.append(track_features)
 
 
-class Reccommender:
-    def __init__(self, extractor_):
-        self.extractor = extractor_
-        self.similar_tracks = []
-
-    # def recommend_song(self, users_song, songs_base):
-    #     song_feature = self.extractor.extract_features(users_song)
-    #     for track in songs_base:
-    #         similarity = 1 - cosine(song_feature, track[1])
-    #         if 0.6 <= similarity <= 1:  # 0.99992 <= similarity <= 1
-    #             self.similar_tracks.append((track[0], similarity))
-
-    def recommend_song(self, user_song, songs_base):
-        pass
-
-
 def find_nearest_points(embeddings, target_point, k=5):
     # Вычисление расстояний между целевой точкой и всеми другими точками
     # https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html
     distances = np.linalg.norm(embeddings - target_point, axis=1)
 
     # Нахождение индексов точек с наименьшими расстояниями (кроме целевой точки)
-    nearest_indices = np.argsort(distances)[1:k + 1]
+    nearest_indices = np.argsort(distances)[0:k + 1]
 
     return nearest_indices
 
@@ -115,28 +94,20 @@ if __name__ == '__main__':
     # extractor.create_songs_base(files.list_files)
     # extractor.values_to_np()
     # joblib.dump(extractor, 'exctractor_test.pkl')
-
-
-    # recommender = Reccommender(extractor)
-    # recommender.recommend_song(r"D:\Music\Paul Mauriat and His Orchestra,Вольфганг Амадей Моцарт - Symphony No. 40 In G Minor K550_ 1. Molto Allegro.mp3",
-    #                            extractor.couples_song_features)
     #
-    # print(sorted(recommender.similar_tracks, reverse=True, key=lambda x: x[1]))
-    # Преобразование одномерных векторов в двумерные с помощью TSNE
     extractor = joblib.load('exctractor_test.pkl')
-    # Преобразование списков в массивы NumPy
-    # song_vectors_np = [np.array(vector) for vector in extractor.song_vectors]
-    #
-    # # Преобразование списка массивов NumPy в двумерный массив NumPy
-    # song_vectors_np = np.array(song_vectors_np)
 
-    id = np.where(extractor.song_names == "Johann Sebastian Bach,Voque Session,Laysan Khusniyarova - Cello Suite No. 1 in G Major_ Prélude")
+    start = time.time()
+
+    id = 30 # np.where(extractor.song_names == "Kish,Vxlious - LA")
     print(extractor.song_names[id])
     print('Ближайшие к нему: ')
-    nearest = find_nearest_points(extractor.song_vectors_np, extractor.song_vectors_np[id])
+    nearest = find_nearest_points(extractor.song_vectors_np, extractor.song_vectors_np[id], k=7)
+    print(nearest)
     for i in nearest:
         print(extractor.song_names[i])
-
+    end = time.time()
+    print(end-start)  # 0.65
     # # Создание объекта t-SNE
     # tsne = TSNE(n_components=2, random_state=42, perplexity=5)
     #
@@ -157,35 +128,11 @@ if __name__ == '__main__':
     #
     # # Подписываем точки именами треков
     # for i, track_name in enumerate(extractor.song_names):
-    #     plt.annotate(track_name, (embeddings_2d[i, 0], embeddings_2d[i, 1]))
+    #     if track_name in extractor.song_names[nearest]:
+    #         plt.annotate(track_name, (embeddings_2d[i, 0], embeddings_2d[i, 1]))
     #
     # plt.xlabel('TSNE Component 1')
     # plt.ylabel('TSNE Component 2')
     # plt.title('TSNE Visualization of Track Embeddings with KMeans Clusters')
     # plt.colorbar(label='Cluster')
     # plt.show()
-
-
-
-
-
-
-
-
-    # tsne = TSNE(n_components=2, random_state=42, perplexity=3)
-    # embeddings_2d = tsne.fit_transform(song_vectors_np)
-    #
-    # # Отрисовка графика
-    # plt.figure(figsize=(10, 10))
-    # plt.scatter(embeddings_2d[:, 0], embeddings_2d[:, 1])
-    #
-    # # Добавление названий треков к точкам
-    # for i, track_name in enumerate(extractor.song_names):
-    #     plt.annotate(track_name, (embeddings_2d[i, 0], embeddings_2d[i, 1]))
-    #
-    # plt.xlabel('TSNE Component 1')
-    # plt.ylabel('TSNE Component 2')
-    # plt.title('TSNE Visualization of Track Embeddings')
-    # plt.show()
-
-    pass
