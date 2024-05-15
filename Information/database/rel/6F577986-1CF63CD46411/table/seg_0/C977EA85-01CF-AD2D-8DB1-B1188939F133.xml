@@ -42,15 +42,5 @@
 <colUsage columnID="CC510E23-8500-7255-C668-0431B76B01FD"/>
 </indexColumnUsage>
 </ind_PK_UK>
-<ind_PK_UK id="1E9376B2-36D9-9342-8DB5-4F9899B81AF6" name="label__UNv1">
-<createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:01:53 UTC</createdTime>
-<ownerDesignName>database</ownerDesignName>
-<indexState>Unique Constraint</indexState>
-<isSurrogateKey>false</isSurrogateKey>
-<indexColumnUsage>
-<colUsage columnID="CC510E23-8500-7255-C668-0431B76B01FD"/>
-</indexColumnUsage>
-</ind_PK_UK>
 </indexes>
 </Table>

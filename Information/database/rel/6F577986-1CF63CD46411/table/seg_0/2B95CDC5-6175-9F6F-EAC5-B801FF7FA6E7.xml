@@ -67,16 +67,6 @@
 <colUsage columnID="9375D9FB-ACCE-63CC-34AA-2876599F0101"/>
 </indexColumnUsage>
 </ind_PK_UK>
-<ind_PK_UK id="6F40F21C-A18F-D1D1-A8C4-A4F9C2C4D0A6" name="track__UN">
-<createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:26:32 UTC</createdTime>
-<ownerDesignName>database</ownerDesignName>
-<indexState>Unique Constraint</indexState>
-<isSurrogateKey>false</isSurrogateKey>
-<indexColumnUsage>
-<colUsage columnID="9375D9FB-ACCE-63CC-34AA-2876599F0101"/>
-</indexColumnUsage>
-</ind_PK_UK>
 <ind_PK_UK id="3A7C79AD-EEE3-E354-389A-7FD3E46B303A" name="track_album_FK">
 <createdBy>Сергей</createdBy>
 <createdTime>2024-04-21 14:18:30 UTC</createdTime>

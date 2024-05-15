@@ -42,15 +42,5 @@
 <colUsage columnID="70DFA8F0-22F5-A99D-305D-AE217FBD56A0"/>
 </indexColumnUsage>
 </ind_PK_UK>
-<ind_PK_UK id="C07D02B7-E0C8-6589-6A5F-084DFC8A11BD" name="artist__UN">
-<createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:26:12 UTC</createdTime>
-<ownerDesignName>database</ownerDesignName>
-<indexState>Unique Constraint</indexState>
-<isSurrogateKey>false</isSurrogateKey>
-<indexColumnUsage>
-<colUsage columnID="70DFA8F0-22F5-A99D-305D-AE217FBD56A0"/>
-</indexColumnUsage>
-</ind_PK_UK>
 </indexes>
 </Table>

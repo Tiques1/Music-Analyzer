@@ -1,15 +1,49 @@
 .slider-container {
   width: 50%;
-  margin: 0 auto;
-  text-align: center;
+  text-align: right;
+  position: fixed;
+  right: 0;
+  margin-right: 40px;
+  margin-top: 40px;
 }
 
 .slider {
-  width: 100%;
-  height: 10px;
+-webkit-appearance: none;
+  width: 45vh;
+  height: 9px;
   margin-bottom: 10px;
+  background: #242630;
+  opacity: 0.95;
+  border-radius: 5px;
+}
+
+.slider:hover{
+  opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 9px;
+  height: 9px;
+  border-radius: 100%;
+  background: #0072cc;
+  cursor: pointer;
 }
 
 button {
-  margin-top: 20px;
+  margin-top: 10px;
+}
+
+.search-container{
+  width: 25%;
+  margin: auto;
+}
+
+#mainSearch{
+  background: #5c5c64;
+  color: #ffffff;
+  border-radius: 5px;
+  width: 25%;
+  /* background-image: url('путь_к_изображению'); */
 }

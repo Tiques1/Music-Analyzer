@@ -1,16 +1,16 @@
 <?xml version = '1.0' encoding = 'UTF-8'?>
-<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="9EDFE62C-F55D-05A2-75BE-0A2C77B4FCEC" name="genre">
+<Table class="oracle.dbtools.crest.model.design.relational.Table" directorySegmentName="seg_0" id="9B999E33-7A2C-DE8E-AD3D-D6ECD6D1ED2E" name="user">
 <createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:02:36 UTC</createdTime>
+<createdTime>2024-05-15 12:05:14 UTC</createdTime>
 <ownerDesignName>database</ownerDesignName>
-<ordsAlias>table_3</ordsAlias>
+<ordsAlias>table_8</ordsAlias>
 <allowColumnReorder>false</allowColumnReorder>
 <existDependencyGenerateInDDl>true</existDependencyGenerateInDDl>
 <parsed>true</parsed>
 <columns itemClass="oracle.dbtools.crest.model.design.relational.Column">
-<Column name="id" id="C8312F3F-2161-D8B4-01F3-4D40B37C4E10">
+<Column name="id" id="6CEDDAE8-3DFF-1CFD-0188-8DACC3FA07F2">
 <createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:03:18 UTC</createdTime>
+<createdTime>2024-05-15 12:05:57 UTC</createdTime>
 <ownerDesignName>database</ownerDesignName>
 <useDomainConstraints>false</useDomainConstraints>
 <use>1</use>
@@ -18,9 +18,20 @@
 <ownDataTypeParameters>,,</ownDataTypeParameters>
 <autoIncrementCycle>false</autoIncrementCycle>
 </Column>
-<Column name="name" id="90C3A683-B6BA-AB19-9BDF-1406D052A31C">
+<Column name="name" id="ED6E0C6B-D850-CAAA-29D6-DCA286F46993">
 <createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:03:18 UTC</createdTime>
+<createdTime>2024-05-15 12:05:30 UTC</createdTime>
+<ownerDesignName>database</ownerDesignName>
+<nullsAllowed>true</nullsAllowed>
+<useDomainConstraints>false</useDomainConstraints>
+<use>1</use>
+<logicalDatatype>BB7273C4-FE5C-C36B-6F81-A8C57CDB2851</logicalDatatype>
+<ownDataTypeParameters>,,</ownDataTypeParameters>
+<autoIncrementCycle>false</autoIncrementCycle>
+</Column>
+<Column name="password" id="6C2FBD2E-3617-5A9F-22DD-794BA597D515">
+<createdBy>Сергей</createdBy>
+<createdTime>2024-05-15 12:05:41 UTC</createdTime>
 <ownerDesignName>database</ownerDesignName>
 <nullsAllowed>true</nullsAllowed>
 <useDomainConstraints>false</useDomainConstraints>
@@ -31,15 +42,15 @@
 </Column>
 </columns>
 <indexes itemClass="oracle.dbtools.crest.model.design.relational.Index">
-<ind_PK_UK id="B40D6F29-A107-FCC0-A505-B77171E11270" name="genre_PK">
+<ind_PK_UK id="09732560-8DE9-7BE4-E72F-2D0FB5ACEC42" name="user_PK">
 <createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:03:18 UTC</createdTime>
+<createdTime>2024-05-15 12:06:23 UTC</createdTime>
 <ownerDesignName>database</ownerDesignName>
 <pk>true</pk>
 <indexState>Primary Constraint</indexState>
 <isSurrogateKey>false</isSurrogateKey>
 <indexColumnUsage>
-<colUsage columnID="C8312F3F-2161-D8B4-01F3-4D40B37C4E10"/>
+<colUsage columnID="6CEDDAE8-3DFF-1CFD-0188-8DACC3FA07F2"/>
 </indexColumnUsage>
 </ind_PK_UK>
 </indexes>

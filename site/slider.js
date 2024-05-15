@@ -38,3 +38,22 @@ function sendRequest() {
       console.error('There was a problem with the fetch operation:', error);
     });
 }
+
+// Получаем все слайдеры
+const sliders = document.querySelectorAll('.slider');
+
+// Обходим каждый слайдер
+sliders.forEach(slider => {
+  // Получаем элемент с соответствующим id для отображения значения
+  const sliderValue = document.getElementById(slider.id + 'Value');
+
+  // Обновляем значение при изменении положения слайдера
+  slider.addEventListener('input', () => {
+    sliderValue.textContent = slider.value;
+  });
+});
+
+
+
+
+

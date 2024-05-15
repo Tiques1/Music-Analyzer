@@ -81,16 +81,6 @@
 <colUsage columnID="9823709B-E3E2-8D08-A1B5-7227FA4936A7"/>
 </indexColumnUsage>
 </ind_PK_UK>
-<ind_PK_UK id="6E3C80CE-C4B0-D012-E393-CC874C0F06FA" name="album__UN">
-<createdBy>Сергей</createdBy>
-<createdTime>2024-04-21 14:06:07 UTC</createdTime>
-<ownerDesignName>database</ownerDesignName>
-<indexState>Unique Constraint</indexState>
-<isSurrogateKey>false</isSurrogateKey>
-<indexColumnUsage>
-<colUsage columnID="9823709B-E3E2-8D08-A1B5-7227FA4936A7"/>
-</indexColumnUsage>
-</ind_PK_UK>
 <ind_PK_UK id="C6F457DB-4DCB-3F83-66EC-CBC96ED8A613" name="album_label_FK">
 <createdBy>Сергей</createdBy>
 <createdTime>2024-04-21 14:12:19 UTC</createdTime>
