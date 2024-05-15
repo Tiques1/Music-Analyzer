@@ -1,0 +1,15 @@
+.slider-container {
+  width: 50%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.slider {
+  width: 100%;
+  height: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  margin-top: 20px;
+}

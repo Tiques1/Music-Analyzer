@@ -1,0 +1,28 @@
+<DOCTYPE html>
+<html lang="en>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible"
+    content="IE-edge">
+    <meta name="viewport" content="width=device-width, 
+    initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <h2 id="rangeValue"></h2>
+   	<div id="fillRangeValue"></div>
+	<input type="range" class="range" value="0"
+	min="0" max="100" onmouse="rangeSlider(this.
+	value)" onChange="rangeSLider(this.value)">
+    </div>
+
+    <script type="text/javascript">
+function rangeSlider(value){
+    document.getElementById('rangeValue').innerHTML=value;
+    document.getElementById('fillRangeValue').style.width = value;
+    
+}
+    </script>
+</body>
