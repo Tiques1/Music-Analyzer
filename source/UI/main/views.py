@@ -17,7 +17,7 @@ def index(request):
     # tracks = Track.objects.order_by('name')
     name = request.GET.get('name')
     if not name:
-        return render(request, "main/layout.html", {'track_list': ['Start search tracks']})
+        return render(request, "main/layout.html", {'track_list': ['NOT FOUND']})
 
     # return render(request, "tracks/track.html", {'tracks': tracks})
     db = DBHelper(database="music", user="postgres", password="1111", host='localhost')

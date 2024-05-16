@@ -1,8 +1,8 @@
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'main/css/slider.css'%}">
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/slider.css'%}" xmlns="http://www.w3.org/1999/html">
 <title>{% block title %}
        {% endblock %}</title>
-<body>
+<body id="body">
   <aside>
     <h3>Навигация</h3>
     <ul>
@@ -10,64 +10,37 @@
     </ul>
   </aside>
 
-  <form action="{% url 'main_home' %}" method="get" >
+  <form action="{% url 'main_home' %}" method="get" id="inputForm">
     <input type="text" id="searchInput" name="name" placeholder="Введите запрос">
     <button type="submit" id="mainSearch">Поиск</button>
   </form>
 
+  <div>
+      <div>
+          <img src="{% static 'main/img/logo.png' %}" class="png-image">
+      </div>
+      
+  </div>
+  
   <!-- {% block content %}
   {% endblock %} -->
-  <div>
+  <div id="trackList">
     {% for el in track_list %}
           <div id="trackListElement">
-              <h3>{{ el }}</h3>
+              <div>{{ el }}</div>
           </div>
     {% endfor %}
 
     {% for el in authorship_list %}
           <div id="authorshipListElement">
-              <h3>{{ el }}</h3>
+              <div>{{ el.1 }}</div>
           </div>
     {% endfor %}
 
     {% for el in artist_list %}
           <div id="artistListElement">
-              <h3>{{ el }}</h3>
+              <div>{{ el }}</div>
           </div>
     {% endfor %}
   </div>
-  <div class="slider-container">
-  <div class="slider-wrapper">
-    <span class="slider-value" id="slider1Value">50</span>
-    <input type="range" min="0" max="100" value="50" class="slider" id="slider1">
-  </div>
-
-
-  <div class="slider-wrapper">
-    <span class="slider-value" id="slider2Value">50</span>
-    <input type="range" min="0" max="100" value="50" class="slider" id="slider2">
-  </div>
-
-
-  <div class="slider-wrapper">
-    <span class="slider-value" id="slider3Value">50</span>
-    <input type="range" min="0" max="100" value="50" class="slider" id="slider3">
-  </div>
-
-
-  <div class="slider-wrapper">
-    <span class="slider-value" id="slider4Value">50</span>
-    <input type="range" min="0" max="100" value="50" class="slider" id="slider4">
-  </div>
-
-
-  <div class="slider-wrapper">
-    <span class="slider-value" id="slider5Value">50</span>
-    <input type="range" min="0" max="100" value="50" class="slider" id="slider5">
-  </div>
-  <button onclick="sendRequest()">Отправить запрос</button>
-  </div>
-
-  <div></div>
 </body>
-<script src="{% static 'main/js/slider.js'%}"></script>
