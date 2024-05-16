@@ -1,0 +1,73 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/slider.css'%}">
+<title>{% block title %}
+       {% endblock %}</title>
+<body>
+  <aside>
+    <h3>Навигация</h3>
+    <ul>
+      <a href="{% url 'main_home' %}"><li>Главная</li></a>
+    </ul>
+  </aside>
+
+  <form action="{% url 'main_home' %}" method="get" >
+    <input type="text" id="searchInput" name="name" placeholder="Введите запрос">
+    <button type="submit" id="mainSearch">Поиск</button>
+  </form>
+
+  <!-- {% block content %}
+  {% endblock %} -->
+  <div>
+    {% for el in track_list %}
+          <div id="trackListElement">
+              <h3>{{ el }}</h3>
+          </div>
+    {% endfor %}
+
+    {% for el in authorship_list %}
+          <div id="authorshipListElement">
+              <h3>{{ el }}</h3>
+          </div>
+    {% endfor %}
+
+    {% for el in artist_list %}
+          <div id="artistListElement">
+              <h3>{{ el }}</h3>
+          </div>
+    {% endfor %}
+  </div>
+  <div class="slider-container">
+  <div class="slider-wrapper">
+    <span class="slider-value" id="slider1Value">50</span>
+    <input type="range" min="0" max="100" value="50" class="slider" id="slider1">
+  </div>
+
+
+  <div class="slider-wrapper">
+    <span class="slider-value" id="slider2Value">50</span>
+    <input type="range" min="0" max="100" value="50" class="slider" id="slider2">
+  </div>
+
+
+  <div class="slider-wrapper">
+    <span class="slider-value" id="slider3Value">50</span>
+    <input type="range" min="0" max="100" value="50" class="slider" id="slider3">
+  </div>
+
+
+  <div class="slider-wrapper">
+    <span class="slider-value" id="slider4Value">50</span>
+    <input type="range" min="0" max="100" value="50" class="slider" id="slider4">
+  </div>
+
+
+  <div class="slider-wrapper">
+    <span class="slider-value" id="slider5Value">50</span>
+    <input type="range" min="0" max="100" value="50" class="slider" id="slider5">
+  </div>
+  <button onclick="sendRequest()">Отправить запрос</button>
+  </div>
+
+  <div></div>
+</body>
+<script src="{% static 'main/js/slider.js'%}"></script>

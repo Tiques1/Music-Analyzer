@@ -1,0 +1,19 @@
+{% extends 'main/layout.html' %}
+
+{% block title %}
+  <h1>Главная</h1>
+{% endblock %}
+
+{% block content %}
+  <h1>{{ values }}</h1>
+  {% for el in values %}
+    {% if el == '1' %}
+      {% filter upper %}
+        <p>{{ el }}</p>
+      {% endfilter %}
+    {% endif %}
+  {% endfor %}
+  {{ dict.cat }}
+  <h4>Трек1</h4>
+  <h4>Трек2</h4>
+{% endblock %}

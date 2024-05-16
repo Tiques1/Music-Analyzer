@@ -1,0 +1,10 @@
+<h1>Список треков</h1>
+<div class="features">
+    {% for el in tracks %}
+        <div class="alert alert-warning">
+            <h3>{{ el.name }}</h3>
+            <p>{{ el.text }}</p>
+            <a href="{% url 'detail_track' el.name %}">Перейти к треку</a>
+        </div>
+    {% endfor %}
+</div>
