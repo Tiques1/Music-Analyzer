@@ -14,7 +14,7 @@ class FileRenamer:
     def mainloop(self):
         while True:
             try:
-                list_of_files = glob.glob('D:\\Music\\*.mp3')
+                list_of_files = glob.glob(f'{self.file_dir}*.mp3')
                 latest_file = max(list_of_files, key=os.path.getctime)
             except (ValueError, FileNotFoundError):
                 continue

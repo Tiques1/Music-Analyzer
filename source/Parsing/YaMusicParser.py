@@ -1,3 +1,5 @@
+import time
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, \
@@ -98,23 +100,23 @@ class YaMusicParser:
 
     # If set timeout, beware TimeoutError
     def browse(self, url, timeout: int = None):
+        self._check(url)
         if self.__browser.current_url == url:
             return 1
-        self._check(url)
         if timeout is not None:
             self.__browser.set_page_load_timeout(timeout)
         try:
             self.__browser.get(url)
         except TimeoutException:
             return
+        time.sleep(0.5)
         return self.__method
 
     def get_buttons(self):
         return self.__browser.find_elements(By.ID, '_music_save_button')
 
     # Click button and download track into self.save_dir. Return track info
-    @staticmethod
-    def download(button):
+    def download(self, button):
         # Because button will updated and I need observe it
         parent = button.find_element(By.XPATH, "./..")
 
@@ -147,36 +149,46 @@ class YaMusicParser:
             except StaleElementReferenceException:
                 pass
 
+        self.__browser.execute_script("arguments[0].scrollIntoView();", button)
         # Album id, Track id
         return album.get_attribute('href').split('/')[4], album.get_attribute('href').split('/')[6]
 
     # Only with link like /album/album_id/track/track_id
-    def get_track(self):
+    def get_track(self, id_):
         if self.__method != 'track':
             raise WrongLink('Link must look like /album/album_id/track/track_id')
 
-        side_bar = self.__browser.find_element(By.XPATH, "//div[@class='sidebar__placeholder sidebar__sticky']")
-        span = side_bar.find_element(By.XPATH, "//span[@class='d-artists']")
-        artist_list = span.find_elements(By.XPATH, "//a[@class='d-link deco-link']")
+        sidebar = self.__browser \
+            .find_element(By.CSS_SELECTOR, "div[class^='sidebar__info']")
+        artist_list = sidebar.find_element(By.CSS_SELECTOR, "span[class^='d-artists']")
+        artist_list = artist_list.find_elements(By.TAG_NAME, "a")
+
         artists_id = []
         for artist in artist_list:
             artists_id.append(artist.get_attribute('href').split('/')[4])
 
-        name = self.__browser.find_element(By.XPATH, "//div[@class='d-track__name']").get_attribute('title')
+        # name = self.__browser.find_elements(By.XPATH, "//div[@class='d-track__name']")
 
-        number_in_album = self.__browser.find_element(By.XPATH, "//div[@class='d-track typo-track d-track_selectable"
-                                                                " d-track_inline-meta _music_ready']") \
-            .get_attribute('data-id')
+        numbers = self.__browser.find_elements(By.CSS_SELECTOR, "div[class^='d-track typo-track d-track_selectable']")
+        number = 0
+        for num in numbers:
+            if num.get_attribute('data-item-id') == id_:
+                number = num.get_attribute('data-id')
+                name = num.find_element(By.CSS_SELECTOR, "div[class^='d-track__name']").get_attribute('title')
+                break
 
-        return artists_id, name, number_in_album
+        return artists_id, name, number
 
     # Only on album's page
     def get_album(self):
         if self.__method not in ('album', 'track'):
             raise WrongLink('Link must look like /album/album_id/track/track_id or /album/album_id')
 
-        cover = self.__browser.find_element(By.XPATH, "//img[@class='entity-cover__image deco-pane']") \
-            .get_attribute('src')
+        try:
+            cover = self.__browser.find_element(By.XPATH, "//img[@class='entity-cover__image deco-pane']") \
+                .get_attribute('src')
+        except:
+            cover = None
 
         information_div = self.__browser.find_element(By.XPATH, "//div[@class='d-generic-page-head__main-top']")
         name = information_div.find_element(By.XPATH, "//span[@class='deco-typo']").text
@@ -189,12 +201,14 @@ class YaMusicParser:
         genres = ';'.join(genres)
 
         artists_id = []
-        for a in information_div.find_elements(By.XPATH, "//a[@class='page-album__artists-short']"):
+        span = information_div.find_element(By.XPATH, "//span[@class='d-artists']")
+        for a in span.find_elements(By.TAG_NAME, 'a'):
             artists_id.append(a.get_attribute('href').split('/')[4])
 
         label_id = []
         label_div = self.__browser.find_element(By.XPATH, "//div[@class='page-album__label']")
-        for lbl in label_div.find_elements(By.XPATH, "//a[@class='d-link deco-link']"):
+        for lbl in label_div.find_elements(By.XPATH,
+                                           "//a[@class='d-album-summary__group d-album-summary__item typo-disabled']"):
             label_id.append(lbl.get_attribute('href'))
 
         return cover, name, year, genres, artists_id, label_id
@@ -204,15 +218,22 @@ class YaMusicParser:
         if self.__method != 'artist':
             raise WrongLink('Link must look like /artist/artist_id')
 
-        name = self.__browser.find_element(By.XPATH, "//h1[@class='page-artist__title typo-h1 typo-h1_big']").text
         try:
-            avatar = self.__browser.find_element(By.XPATH, "//img[@class='artist-pics__pic']") \
-                .get_attribute('src')
-        except Exception:
-            avatar = self.__browser.find_element(By.XPATH, "//img[@class='artist-pics__pic artist-pics__pic_empty']") \
-                .get_attribute('src')
+            name = self.__browser.find_element(By.XPATH, "//h1[@class='page-artist__title typo-h1 typo-h1_big']").text
+        except:
+            try:
+                name = self.__browser.find_element(By.XPATH, "//h1[@class='page-artist__title typo-h1 typo-h1_small']") \
+                    .text
+            except:
+                name = ''
 
-        return name, avatar
+        # try:
+        #     avatar = self.__browser.find_element(By.XPATH, "//img[@class='artist-pics__pic']") \
+        #         .get_attribute('src')
+        # except Exception:
+        #     avatar = None
+
+        return name
 
     # Only on label's page
     def get_label(self):
@@ -234,11 +255,14 @@ class YaMusicParser:
             raise UnknownLink(url)
         self.__method = method
 
+    def __del__(self):
+        self.__browser.close()
+
 
 LINKTYPE = {
-    r'https://music\.yandex\.ru/album/(\d+)/track/(\d+)': 'track',
-    r'https://music\.yandex\.ru/artist/(\d+)': 'artist',
-    r'https://music\.yandex\.ru/album/(\d+)': 'album',
-    r'https://music\.yandex\.ru/label/(\d+)': 'label',
-    r'https://music\.yandex\.ru/artist/(\d+)/tracks': 'track'
+    r'https://music\.yandex\.ru/album/(\d+)/track/(\d+)$': 'track',
+    r'https://music\.yandex\.ru/artist/(\d+)$': 'artist',
+    r'https://music\.yandex\.ru/album/(\d+)$': 'album',
+    r'https://music\.yandex\.ru/label/(\d+)$': 'label',
+    r'https://music\.yandex\.ru/artist/(\d+)/tracks$': 'track'
 }
