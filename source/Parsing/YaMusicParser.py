@@ -93,14 +93,14 @@ class YaMusicParser:
     # If set timeout, beware TimeoutError
     def browse(self, url, timeout: int = None):
         if self.__browser.current_url == url:
-            return
+            return 1
         self._check(url)
         if timeout is not None:
             self.__browser.set_page_load_timeout(timeout)
         try:
             self.__browser.get(url)
         except TimeoutException:
-            raise TimeoutError
+            return
         return self.__method
 
     def get_buttons(self):

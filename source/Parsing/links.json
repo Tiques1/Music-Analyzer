@@ -1,0 +1,14 @@
+{
+  "0": {
+    "link": "http",
+    "start": 0,
+    "stop": 10,
+    "step": 1
+  },
+  "1": {
+    "link": "http",
+    "start": 3,
+    "stop": 7,
+    "step": 2
+  }
+}
