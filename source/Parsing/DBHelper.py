@@ -44,14 +44,15 @@ async def main():
     print(result)
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    # asyncio.run(main())
 
-    # db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
+    db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
     # db.exec('insert into track values (5, \'Новый мерин\', 2, 666)')
     # db.exec('insert into artist values (666, \'Morgenshtern\')')
     # db.exec('insert into autorship values (4, 666)')
 
-    # db.exec('truncate table track')
+    db.exec('select * from album')
+    print(db.fetch_all())
     # asyncio.run(db.exec("""
     # create table album_autorship (
     #     album integer,

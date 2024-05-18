@@ -135,14 +135,14 @@ class Crawler(BaseCrawler):
 
 
 if __name__ == '__main__':
-    crawler = BaseCrawler()
+    crawler = Crawler()
     db = DBHelper('music', 'postgres', '1111', 'localhost')
 
     # First of all download tracks from json file
 
-    # links = crawler.read_link('links.json')
-    # for link1 in links.values():
-    #     crawler.download(link1)
+    links = crawler.read_link('links.json')
+    for link1 in links.values():
+        crawler.download(link1)
 
     # Then generate links from database and fill up info
 
