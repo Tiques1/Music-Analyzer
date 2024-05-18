@@ -48,7 +48,7 @@ class Crawler(BaseCrawler):
         self.parser = YaMusicParser()
         self.parser.save_dir = 'D:\\Music\\Test'
         self.parser.profile = 'Default'
-        self.parser.user_data = r'C:\\Users\\Сергей\\AppData\\Local\\Google\\Chrome\\User Data'
+        self.parser.user_data = 'C:/Users/Сергей/AppData/Local/Google/Chrome/User Data'
 
         self.db = DBHelper('music', 'postgres', '1111', 'localhost')
 
@@ -66,7 +66,7 @@ class Crawler(BaseCrawler):
         while not buttons:
             buttons = self.parser.get_buttons()
 
-        for i in range(link['start'], link['stop'], link['step']):
+        for i in range(int(link['start']), int(link['stop']), int(link['step'])):
             try:
                 alb_id, track_id = self.parser.download(buttons[i])
             except IndexError:
@@ -140,7 +140,7 @@ if __name__ == '__main__':
 
     # First of all download tracks from json file
 
-    links = crawler.read_link('links.json')
+    links = crawler.read_link('test.json')
     for link1 in links.values():
         crawler.download(link1)
 

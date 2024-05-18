@@ -3,8 +3,10 @@ from selenium.webdriver.common.by import By
 from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, \
     ElementClickInterceptedException
 import os
-from source.Parsing.Exceptions import UnknownLink, WrongLink
+from Exceptions import UnknownLink, WrongLink
 import re
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 
 """
 В браузере должно быть установлено расширение https://chromewebstore.google.com/detail/
@@ -70,10 +72,14 @@ class YaMusicParser:
             "download.directory_upgrade": True
         }
         opt.add_experimental_option("prefs", prefs)
-        opt.add_argument(rf'--profile-directory={self.profile}')
-        opt.add_argument(rf"--user-data-dir={self.user_data}")
-        # self.opt.add_extension('..\\..\\resources\\HFOFHOFFDCFCJGMILKPNHKAMCGEMABAN_2_0_8_0.crx')
+        opt.add_argument(f'--profile-directory={self.profile}')
+        opt.add_argument(f'--user-data-dir={self.user_data}')
+        # opt.add_argument("--disable-dev-shm-usage")  # Отключение использования /dev/shm
+        # opt.add_argument("--remote-debugging-port=15000")  # Указание порта для удаленной отладки
+        # opt.binary_location = "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
 
+        # opt.add_extension('..\\..\\resources\\HFOFHOFFDCFCJGMILKPNHKAMCGEMABAN_2_0_8_0.crx')
+        # service=Service(ChromeDriverManager().install())
         self.__browser = webdriver.Chrome(options=opt)
 
     def close(self):

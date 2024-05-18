@@ -51,7 +51,7 @@ if __name__ == '__main__':
     # db.exec('insert into artist values (666, \'Morgenshtern\')')
     # db.exec('insert into autorship values (4, 666)')
 
-    db.exec('select * from album')
+    db.exec('select * from track')
     print(db.fetch_all())
     # asyncio.run(db.exec("""
     # create table album_autorship (

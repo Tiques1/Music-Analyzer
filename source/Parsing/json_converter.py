@@ -46,16 +46,7 @@ class Converter:
             return self.listen()
         elif inp.startswith('del'):
             n = inp.split(' ')[1]
-            le = len(self.__links) - 1
-            p = 0
-            new = {}
-            for i in range(le+2):
-                if i == int(n):
-                    continue
-                new[p] = self.__links[str(i)]
-                p += 1
-            self.__links = new
-            self.__pointer -= 1
+            self.__links.pop(n)
             return self.listen()
         else:
             return inp
