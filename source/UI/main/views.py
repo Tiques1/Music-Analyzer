@@ -22,13 +22,13 @@ def index(request):
     # return render(request, "tracks/track.html", {'tracks': tracks})
     db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
 
-    db.exec(f"(select * from track where name like '%{name}%')")
+    db.exec(f"select * from track where LOWER(name) like LOWER('%{name}%')")
     tracks = db.fetch_all()
     tracks_list = ()
     if tracks:
         tracks_list = tracks
 
-    db.exec(f"select * from artist where name like '%{name}%'")
+    db.exec(f"select * from artist where LOWER(name) like LOWER('%{name}%')")
     artists = db.fetch_all()
     artist_list = ()
     if artists:
@@ -38,7 +38,7 @@ def index(request):
     FROM track
     INNER JOIN autorship ON track.id = autorship.track
     INNER JOIN artist ON autorship.artist = artist.id
-    WHERE artist.name like '%{name}%';
+    WHERE LOWER(artist.name) like LOWER('%{name}%');
         """)
     authorship = db.fetch_all()
     authorship_list = ()
@@ -46,7 +46,7 @@ def index(request):
         authorship_list = authorship
 
     return render(request, "main/layout.html", {'track_list': tracks_list, 'artist_list': artist_list,
-                                                'authorship_list': authorship_list})
+                                                'authorship_list': authorship_list, "input": name})
 
 
 def about(request):
