@@ -78,7 +78,7 @@ class Crawler(BaseCrawler):
                 self.db.exec(f'insert into track values ({track_id}, null, null, {alb_id})')
 
             if self.db.check_if_exist(alb_id, 'album') is None:
-                self.db.exec(f'insert into album values ({alb_id}, null, null, null, null)')
+                self.db.exec(f'insert into album values ({alb_id}, null, null)')
 
     def parse_artist(self, link):
         if self.parser.browse(link) is None:
@@ -106,7 +106,7 @@ class Crawler(BaseCrawler):
                 self.db.exec(f'insert into album_autorship values ({album_id}, {artist_id})')
 
         if self.db.check_if_exist(album_id, 'album') is None:
-            self.db.exec(f'insert into album values ({album_id}, {name}, none, none, {genres})')
+            self.db.exec(f'insert into album values ({album_id}, {name}, {genres})')
 
     def parse_track(self, link):
         if self.parser.browse(link) is None:

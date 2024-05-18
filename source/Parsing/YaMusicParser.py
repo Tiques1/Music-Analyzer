@@ -180,6 +180,7 @@ class YaMusicParser:
         genres = []
         for g in information_div.find_elements(By.XPATH, "//a[@class='d-link deco-link deco-link_mimic typo']"):
             genres.append(g.text)
+        genres = ';'.join(genres)
 
         artists_id = []
         for a in information_div.find_elements(By.XPATH, "//a[@class='page-album__artists-short']"):
@@ -235,38 +236,3 @@ LINKTYPE = {
     r'https://music\.yandex\.ru/label/(\d+)': 'label',
     r'https://music\.yandex\.ru/artist/(\d+)/tracks': 'track'
 }
-
-
-def main():
-    parser = YaMusicParser()
-    parser.save_dir = 'D:\\Music\\'
-    parser.profile = 'Default'
-    parser.user_data = r'C:\\Users\\Сергей\\AppData\\Local\\Google\\Chrome\\User Data'
-
-    parser.start()
-    try:  # https://music.yandex.ru/artist/8855006/tracks
-        link_type = parser.browse('https://music.yandex.ru/album/21186391/track/100526201')
-    except UnknownLink as e:
-        print(e)
-
-    for button in parser.get_buttons():
-        alb_id, track_id = parser.download(button)
-        print(alb_id, track_id)
-        # try:
-        #     parser.get_artist()
-        # except WrongLink as e:
-        #     print(e)
-    parser.close()
-    # match = re.match(LinkPatterns.TRACK.value, '')
-    #
-    # if match:
-    #     album_id = match.group(1)
-    #     track_id = match.group(2)
-    #     print("Album ID:", album_id)
-    #     print("Track ID:", track_id)
-    # else:
-    #     print("Ссылка не соответствует шаблону.")
-
-
-if __name__ == '__main__':
-    main()
