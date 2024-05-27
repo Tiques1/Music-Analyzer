@@ -1,10 +1,19 @@
-<h1>Список треков</h1>
-<div class="features">
-    {% for el in tracks %}
-        <div class="alert alert-warning">
-            <h3>{{ el.name }}</h3>
-            <p>{{ el.text }}</p>
-            <a href="{% url 'detail_track' el.name %}">Перейти к треку</a>
-        </div>
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/slider.css' %}?{% now 'U' %}" xmlns="http://www.w3.org/1999/html">
+<link rel="stylesheet" type="text/css" href="{% static 'tracks/css/track.css' %}?{% now 'U' %}" xmlns="http://www.w3.org/1999/html">
+
+<title>{% block title %}
+       {% endblock %}</title>
+
+<body id="body">
+  <div class="navbar">
+    <a href="{% url 'main_home' %}">Главная</a>
+    <a href="/liked/">Понравившиеся</a>
+    {% for group in user.groups.all %}
+      {% if group.name == 'manager' %}
+        <a href="statistics">Статистика</a>
+      {% endif %}
     {% endfor %}
-</div>
+  </div>
+</body>
+

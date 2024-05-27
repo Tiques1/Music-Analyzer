@@ -28,7 +28,7 @@
           <div id="trackListElement">
               <a href="/like/{{ el.0 }}" id="trackLike"><img src="{% static 'main/img/like2.png' %}" class="like-button"></a>
               <div id="trackName">
-                  <a href="/" class="text">{{ el.1 }}</a>
+                  <a href="/tracks/{{ el.0 }}" class="text">{{ el.1 }}</a>
               </div>
               <div id="artistUnderTrack">
                   {% for ar in el.4 %}
