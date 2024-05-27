@@ -3,6 +3,7 @@ from django.http import HttpResponse
 import sys
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
+from django.conf import settings
 
 sys.path.append('D:\\Python\\Music-Analyzer\\source\\Parsing')
 
@@ -20,7 +21,7 @@ def index(request):
     # tracks = Track.objects.order_by('name')
     name = request.GET.get('name')
     if not name:
-        return render(request, "main/layout.html", {'track_list': [['', 'NOT FOUND']]})
+        return render(request, "main/layout.html", {'track_list': []})
 
     # return render(request, "tracks/track.html", {'tracks': tracks})
     db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
@@ -49,13 +50,18 @@ def index(request):
         authorship_list = authorship
 
     return render(request, "main/layout.html", {'track_list': tracks_list, 'artist_list': artist_list,
-                                                'authorship_list': authorship_list, "input": name})
+                                                'authorship_list': authorship_list, "input": name, 'user': request.user,
+                                                'music_url': settings.MUSIC_FILES_URL})
 
 
 def like(request, track):
     db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
-    db.exec(f"insert into users.user_liked values ('{request.user.username}', {track})")
 
+    db.exec(f"select * from users.user_liked where user_name = '{request.user.username}' and liked = {track}")
+    if len(db.fetch_all()) > 0:
+        return JsonResponse({'status': f'Track Already liked'})
+
+    db.exec(f"insert into users.user_liked values ('{request.user.username}', {track})")
     response_data = {
         'status': 'success',
         'track': track,

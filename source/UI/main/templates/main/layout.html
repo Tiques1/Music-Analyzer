@@ -1,5 +1,6 @@
 {% load static %}
 <link rel="stylesheet" type="text/css" href="{% static 'main/css/slider.css' %}?{% now 'U' %}" xmlns="http://www.w3.org/1999/html">
+
 <title>{% block title %}
        {% endblock %}</title>
 
@@ -7,8 +8,12 @@
   <div class="navbar">
     <a href="{% url 'main_home' %}">Главная</a>
     <a href="">Понравившиеся</a>
-    {% if  %}
-    <a href="#contact">Контакты</a>
+    {% for group in user.groups.all %}
+      {% if group.name == 'manager' %}
+        <a href="statistics">Статистика</a>
+      {% endif %}
+    {% endfor %}
+
  </div>
 
   <form action="{% url 'main_home' %}" method="get" id="inputForm">
@@ -23,6 +28,9 @@
           <div id="trackListElement">
               <div>{{ el.1 }}</div>
               <a href="/like/{{ el.0 }}"><img src="{% static 'main/img/like2.png' %}" class="like-button"></a>
+              <audio controls>
+                <source src="{{ music_url }}{{ el.0 }}.mp3" type="audio/mpeg">
+              </audio>
           </div>
     {% endfor %}
 
@@ -41,14 +49,4 @@
     {% endfor %}
   </div>
 
-  <form class="filter">
-      <div>
-        <input
-          type="checkbox"
-          id="subscribeNews"
-          name="subscribe"
-          value="newsletter" />
-        <label for="subscribeNews">Subscribe to newsletter?</label>
-      </div>
-  </form>
 </body>

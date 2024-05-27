@@ -124,3 +124,43 @@ button {
     background-color: #ddd;
     color: black;
 }
+
+audio {
+    width: 100%;
+    height: 40px;
+    background-color: transparent; /* Прозрачный фон */
+    border-radius: 5px;
+    box-shadow: none;
+    outline: none;
+}
+
+/* Панель управления плеером */
+audio::-webkit-media-controls-panel {
+    background-color: #41424b; /* Полупрозрачный фон для панели управления */
+    border-radius: 5px;
+}
+
+/* Стили для кнопок управления */
+audio::-webkit-media-controls-play-button,
+audio::-webkit-media-controls-mute-button,
+audio::-webkit-media-controls-seek-back-button,
+audio::-webkit-media-controls-seek-forward-button,
+audio::-webkit-media-controls-fullscreen-button,
+audio::-webkit-media-controls-rewind-button,
+audio::-webkit-media-controls-return-to-realtime-button,
+audio::-webkit-media-controls-volume-slider {
+    opacity: 1; /* Кнопки управления остаются непрозрачными */
+    filter: none; /* Удалите фильтр, если он не нужен */
+}
+
+/* Стили для временных индикаторов и таймлайна */
+audio::-webkit-media-controls-timeline,
+audio::-webkit-media-controls-current-time-display,
+audio::-webkit-media-controls-time-remaining-display {
+    opacity: 0.8; /* Прозрачность временных индикаторов и таймлайна */
+}
+
+/* Менее прозрачный фон при наведении на плеер */
+audio:hover {
+    background-color: transparent;
+}

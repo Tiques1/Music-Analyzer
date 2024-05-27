@@ -55,5 +55,3 @@ sliders.forEach(slider => {
 
 
 
-
-

@@ -121,6 +121,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = "static/"
+MUSIC_FILES_DIR = r'D:\Music\Test'
+MUSIC_FILES_URL = '/media/music_files/'
 
 STATICFILES_DIRS = [
     BASE_DIR / "static",
