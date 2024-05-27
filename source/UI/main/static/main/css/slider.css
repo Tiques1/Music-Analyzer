@@ -97,3 +97,30 @@ button {
 .png-image{
     background-color: transparent;
 }
+
+.like-button {
+    z-index: 1;
+}
+
+/* Основные стили для панели навигации */
+.navbar {
+    overflow: hidden;
+    background-color: #32333d;
+    margin-bottom: 20px;
+}
+
+/* Стили для ссылок в панели навигации */
+.navbar a {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 20px; /* Отступы вокруг ссылок */
+    text-decoration: none;
+}
+
+/* При наведении курсора на ссылку */
+.navbar a:hover {
+    background-color: #ddd;
+    color: black;
+}

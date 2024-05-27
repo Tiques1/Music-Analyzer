@@ -1,12 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 import sys
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
 
 sys.path.append('D:\\Python\\Music-Analyzer\\source\\Parsing')
 
 from DBHelper import DBHelper
 
 
+@login_required
 def index(request):
     # data = {'title': 'Главная страница!!!',
     #         'values': ('1', '2', '3'),
@@ -17,7 +20,7 @@ def index(request):
     # tracks = Track.objects.order_by('name')
     name = request.GET.get('name')
     if not name:
-        return render(request, "main/layout.html", {'track_list': ['NOT FOUND']})
+        return render(request, "main/layout.html", {'track_list': [['', 'NOT FOUND']]})
 
     # return render(request, "tracks/track.html", {'tracks': tracks})
     db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
@@ -47,6 +50,17 @@ def index(request):
 
     return render(request, "main/layout.html", {'track_list': tracks_list, 'artist_list': artist_list,
                                                 'authorship_list': authorship_list, "input": name})
+
+
+def like(request, track):
+    db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
+    db.exec(f"insert into users.user_liked values ('{request.user.username}', {track})")
+
+    response_data = {
+        'status': 'success',
+        'track': track,
+    }
+    return JsonResponse(response_data)
 
 
 def about(request):

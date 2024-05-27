@@ -1,45 +1,42 @@
 {% load static %}
-<link rel="stylesheet" type="text/css" href="{% static 'main/css/slider.css'%}" xmlns="http://www.w3.org/1999/html">
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/slider.css' %}?{% now 'U' %}" xmlns="http://www.w3.org/1999/html">
 <title>{% block title %}
        {% endblock %}</title>
+
 <body id="body">
-  <aside>
-    <h3>Навигация</h3>
-    <ul>
-      <a href="{% url 'main_home' %}"><li>Главная</li></a>
-    </ul>
-  </aside>
+  <div class="navbar">
+    <a href="{% url 'main_home' %}">Главная</a>
+    <a href="">Понравившиеся</a>
+    {% if  %}
+    <a href="#contact">Контакты</a>
+ </div>
 
   <form action="{% url 'main_home' %}" method="get" id="inputForm">
     <input type="text" id="searchInput" name="name" placeholder="Введите запрос"  value="{{ input }}">
     <button type="submit" id="mainSearch">Поиск</button>
   </form>
-
-  <div>
-      <div>
-          <img src="{% static 'main/img/logo.png' %}" class="png-image">
-      </div>
-      
-  </div>
   
   <!-- {% block content %}
   {% endblock %} -->
   <div id="trackList">
     {% for el in track_list %}
           <div id="trackListElement">
-              <div>{{ el }}</div>
+              <div>{{ el.1 }}</div>
+              <a href="/like/{{ el.0 }}"><img src="{% static 'main/img/like2.png' %}" class="like-button"></a>
           </div>
     {% endfor %}
 
     {% for el in authorship_list %}
           <div id="authorshipListElement">
               <div>{{ el.1 }}</div>
+              <a><img src="{% static 'main/img/like2.png' %}" class="like-button"></a>
           </div>
     {% endfor %}
 
     {% for el in artist_list %}
           <div id="artistListElement">
-              <div>{{ el }}</div>
+              <div>{{ el.1 }}</div>
+              <a><img src="{% static 'main/img/like2.png' %}" class="like-button"></a>
           </div>
     {% endfor %}
   </div>
