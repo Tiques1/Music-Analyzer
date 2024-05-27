@@ -44,20 +44,17 @@ class BaseCrawler:
 
 
 class Crawler(BaseCrawler):
-    def __init__(self):
+    def __init__(self, filerenamer):
         super().__init__()
+        self.file_renamer = filerenamer
         self.parser = YaMusicParser()
-        self.parser.save_dir = 'D:\\Music\\Test'
+        self.parser.save_dir = "D:\\ThreeGenres\\Electro"
         self.parser.profile = 'Default'
         self.parser.user_data = 'C:/Users/Сергей/AppData/Local/Google/Chrome/User Data'
 
         self.db = DBHelper('music', 'postgres', '1111', 'localhost')
 
-        self.file_renamer = FileRenamer('D:\\Music\\Test\\')
-        self.renamer = Thread(target=self.file_renamer.mainloop)
-
         self.parser.start()
-        self.renamer.start()
 
     def download(self, link_):
         if self.parser.browse(link_['link']) is None:
@@ -70,16 +67,21 @@ class Crawler(BaseCrawler):
         for i in range(int(link_['start']), int(link_['stop']), int(link_['step'])):
             try:
                 alb_id, track_id = self.parser.download(buttons[i])
-            except IndexError:
+            except Exception as e:
+                print(e)
                 continue
 
             self.file_renamer.rename(track_id)
 
-            if self.db.check_if_exist(track_id, 'track') is None:
+            if not self.db.check_if_exist(track_id, 'track'):
                 self.db.exec(f'insert into track values ({track_id}, null, null, {alb_id})')
+                print(track_id, alb_id)
 
-            if self.db.check_if_exist(alb_id, 'album') is None:
+            if not self.db.check_if_exist(alb_id, 'album'):
                 self.db.exec(f'insert into album values ({alb_id}, null, null)')
+
+        self.parser.scroll_down()
+        return self.download(link_)
 
     def parse_artist(self, link_):
         if self.parser.browse(link_) is None:
@@ -87,10 +89,14 @@ class Crawler(BaseCrawler):
 
         artist_id = link_.split('/')[4]
         artist_name = None
+        c=0
         while True:
             try:
                 artist_name = self.parser.get_artist()
             except NoSuchElementException:
+                if c > 100:
+                    return
+                c+=1
                 continue
             break
 
@@ -105,10 +111,14 @@ class Crawler(BaseCrawler):
 
         album_id = link_.split('/')[4]
         cover, name, year, genres, artists_id, label_id = None, None, None, None, None, None
+        c=0
         while True:
             try:
                 cover, name, year, genres, artists_id, label_id = self.parser.get_album()
             except NoSuchElementException:
+                if c > 100:
+                    return
+                c+=1
                 continue
             break
 
@@ -133,10 +143,14 @@ class Crawler(BaseCrawler):
         album_id = link_.split('/')[4]
 
         artists_ids, name, number_in_album = None, None, None
+        c=0
         while True:
             try:
                 artists_ids, name, number_in_album = self.parser.get_track(track_id)
             except NoSuchElementException:
+                if c > 10000:
+                    return
+                c+=1
                 continue
             break
 
@@ -161,33 +175,44 @@ class Crawler(BaseCrawler):
 
 
 if __name__ == '__main__':
-    crawler = Crawler()
+    file_renamer = FileRenamer("D:\\ThreeGenres\\Electro\\")
+    crawler = Crawler(file_renamer)
     db = DBHelper('music', 'postgres', '1111', 'localhost')
-
-    # First of all download tracks from json file
-
+    #
+    # Thread(target=file_renamer.mainloop).start()
+    # # First of all download tracks from json file
+    #
     # links = crawler.read_link('test.json')
     # for link1 in links.values():
     #     crawler.download(link1)
 
     # Then generate links from database and fill up info
 
-    # db.exec('select distinct album from track')
-    # for album in db.fetch_all():
-    #     link = f'https://music.yandex.ru/album/{album[0]}'
-    #     print(link)
-    #     crawler.parse_album(link)
+    db.exec('select distinct album from track')
+    for album in db.fetch_all():
+        link = f'https://music.yandex.ru/album/{album[0]}'
+        print(link)
+        try:
+            crawler.parse_album(link)
+        except Exception as e:
+            print(e)
 
     db.exec('select id from artist')
     for artist in db.fetch_all():
         link = f'https://music.yandex.ru/artist/{artist[0]}'
         print(link)
-        crawler.parse_artist(link)
+        try:
+            crawler.parse_artist(link)
+        except Exception as e:
+            print(e)
 
-    # db.exec('select album, id from track')
-    # for info in db.fetch_all():
-    #     link = f'https://music.yandex.ru/album/{info[0]}/track/{info[1]}'
-    #     print(link)
-    #     crawler.parse_track(link)
+    db.exec('select album, id from track')
+    for info in db.fetch_all():
+        link = f'https://music.yandex.ru/album/{info[0]}/track/{info[1]}'
+        print(link)
+        try:
+            crawler.parse_track(link)
+        except Exception as e:
+            print(e)
 
     crawler.parser.close()

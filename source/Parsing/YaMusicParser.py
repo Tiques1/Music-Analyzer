@@ -112,20 +112,50 @@ class YaMusicParser:
         time.sleep(0.5)
         return self.__method
 
+    def scroll_down(self):
+        SCROLL_PAUSE_TIME = 1.5
+
+        # Get scroll height
+        # last_height = self.__browser.execute_script("return document.body.scrollHeight")
+
+        # while True:
+        # Scroll down to bottom
+        self.__browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # self.__browser.execute_script("window.scrollTo(0, 1080)")
+        # Wait to load page
+        # time.sleep(SCROLL_PAUSE_TIME)
+
+        # Calculate new scroll height and compare with last scroll height
+        # new_height = self.__browser.execute_script("return document.body.scrollHeight")
+        # if new_height == last_height:
+        #     break
+        # last_height = new_height
+
     def get_buttons(self):
         return self.__browser.find_elements(By.ID, '_music_save_button')
 
     # Click button and download track into self.save_dir. Return track info
     def download(self, button):
+        if button.text == '100%':
+            return
+
+        try:
+            self.__browser.execute_script("arguments[0].scrollIntoView();", button)
+        except:
+            pass
         # Because button will updated and I need observe it
         parent = button.find_element(By.XPATH, "./..")
 
         # Get album id, it needs to further parsing
         album = None
+        c=0
         while True:
             try:
                 album = parent.find_element(By.XPATH, "./../a[@class='d-track__title deco-link deco-link_stronger']")
             except Exception:
+                if c>1000:
+                    break
+                c+=1
                 continue
             break
 
@@ -133,10 +163,17 @@ class YaMusicParser:
         # If you touch scrollbar, you will fuck
 
         # Start download
+        c=0
         while True:
             try:
                 button.click()
-            except ElementClickInterceptedException:
+                button = parent.find_element(By.ID, '_music_save_button')
+                if button.text not in [str(i)+'%' for i in range(0, 100)]:
+                    continue
+            except (ElementClickInterceptedException, StaleElementReferenceException):
+                if c>1000:
+                    break
+                c+=1
                 continue
             break
 
@@ -149,7 +186,6 @@ class YaMusicParser:
             except StaleElementReferenceException:
                 pass
 
-        self.__browser.execute_script("arguments[0].scrollIntoView();", button)
         # Album id, Track id
         return album.get_attribute('href').split('/')[4], album.get_attribute('href').split('/')[6]
 
@@ -264,5 +300,6 @@ LINKTYPE = {
     r'https://music\.yandex\.ru/artist/(\d+)$': 'artist',
     r'https://music\.yandex\.ru/album/(\d+)$': 'album',
     r'https://music\.yandex\.ru/label/(\d+)$': 'label',
-    r'https://music\.yandex\.ru/artist/(\d+)/tracks$': 'track'
+    r'https://music\.yandex\.ru/artist/(\d+)/tracks$': 'track',
+    r'https://music\.yandex\.ru/users/(\S+)/playlists/(\d+)$': 'track'
 }

@@ -47,20 +47,33 @@ if __name__ == '__main__':
     # asyncio.run(main())
 
     db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
+    db.exec(f"select * from track where LOWER(name) like LOWER('%a%')")
+    tracks = db.fetch_all()
+    tracks_list = []
+    if tracks:
+        tracks_list = tracks
+
+    for i, track in enumerate(tracks_list):
+        db.exec(f"select artist.id, artist.name from autorship join artist on artist.id = autorship.artist "
+                f"where track = {track[0]}")
+        ar = db.fetch_all()
+        tracks_list[i] = track + tuple((ar, ))
+
+    print(tracks_list)
     # db.exec('insert into track values (5, \'Новый мерин\', 2, 666)')
     # db.exec('insert into artist values (666, \'Morgenshtern\')')
     # db.exec('insert into autorship values (4, 666)')
     # [(46495, 'Nikolaus Harnoncourt'), (6817576, 'Vladislav Mikhalchuk'), (127970, 'Vladimir Horowitz'), (337777, 'Orchestra del Teatro alla Scala di Milano'), (83835, 'Carlo Maria Giulini'), (556458, 'Nikolai Tokarev'), (6630633, 'HOYO-MiX'), (9528892, '文驰'), (6778857, 'Моцарт Baby колыбельная'), (28523, '')]
-    db.exec('select * from artist where artist = 9528892')
-    for i in db.fetch_all():
-        db.exec(f'select * from track where id = {i[0]}')
-        print(db.fetch_all())
-
-    db.exec('select ')
-    # print(db.fetch_all())
-
-    a = db.check_if_exist(1905501, 'artist')
-    print(not a)
+    # db.exec('select * from artist where artist = 9528892')
+    # for i in db.fetch_all():
+    #     db.exec(f'select * from track where id = {i[0]}')
+    #     print(db.fetch_all())
+    #
+    # db.exec('select ')
+    # # print(db.fetch_all())
+    #
+    # a = db.check_if_exist(1905501, 'artist')
+    # print(not a)
     # asyncio.run(db.exec("""
     # create table album_autorship (
     #     album integer,

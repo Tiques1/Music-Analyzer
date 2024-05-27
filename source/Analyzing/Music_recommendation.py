@@ -10,6 +10,7 @@ import joblib
 from sklearn.cluster import KMeans
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt
+from фабрика_векторов_одинакового_размера import VectorFactory
 
 
 class Files:
@@ -79,7 +80,7 @@ class Extractor:
 def find_nearest_points(embeddings, target_point, k=5):
     # Вычисление расстояний между целевой точкой и всеми другими точками
     # https://numpy.org/doc/stable/reference/generated/numpy.linalg.norm.html
-    distances = np.linalg.norm(embeddings - target_point, axis=1)
+    distances = np.linalg.norm(embeddings - target_point, axis=0)
 
     # Нахождение индексов точек с наименьшими расстояниями (кроме целевой точки)
     nearest_indices = np.argsort(distances)[0:k + 1]
@@ -88,18 +89,24 @@ def find_nearest_points(embeddings, target_point, k=5):
 
 
 if __name__ == '__main__':
-    # files = Files("D:\\Music\\Test")
+    files = Files("D:\\Music\\Test")
+
+    factory = VectorFactory(target_length=500000)
+    extractor = Extractor()
+
+    for i in files.list_files[0:20]:
+        song_name = i.split("\\")[-1][0:-4]
+        extractor.song_names = np.append(extractor.song_names, song_name)
+        print(song_name)
+        extractor.song_vectors_np = np.append(extractor.song_vectors_np, factory.interpolate_vector(factory.create_vector(i, 'mel_spectrogram')))
+
+    joblib.dump(extractor, 'vec_base.pkl')
     #
-    # extractor = Extractor()
-    # extractor.create_songs_base(files.list_files)
-    # extractor.values_to_np()
-    # joblib.dump(extractor, 'exctractor_test.pkl')
-    #
-    extractor = joblib.load('exctractor_test.pkl')
+    # extractor = joblib.load('exctractor_test.pkl')
 
     start = time.time()
 
-    id = 30 # np.where(extractor.song_names == "Kish,Vxlious - LA")
+    id = 20 # np.where(extractor.song_names == "Kish,Vxlious - LA")
     print(extractor.song_names[id])
     print('Ближайшие к нему: ')
     nearest = find_nearest_points(extractor.song_vectors_np, extractor.song_vectors_np[id], k=7)

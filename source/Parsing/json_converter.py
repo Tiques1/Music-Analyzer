@@ -10,7 +10,7 @@ class Converter:
 
     def start(self):
         print('Добро пожаловать!')
-        while self.listen() != 'exit':
+        while self._listen() != 'exit':
             link = input('Вставьте сслыку: ')
             from_ = input('От: ')
             to = input('До: ')
@@ -21,7 +21,7 @@ class Converter:
         with open(self.__filename, 'w') as file:
             json.dump(self.__links, file)
 
-    def listen(self):
+    def _listen(self):
         inp = input('-' * shutil.get_terminal_size()[0])
 
         if inp == '':
@@ -33,9 +33,9 @@ class Converter:
                 n = inp.split(' ')[1]
                 for i in range(len(self.__links) - 1, len(self.__links) - int(n) - 1, -1):
                     print(str(i), self.__links[str(i)])
-                return self.listen()
+                return self._listen()
             except:
-                return self.listen()
+                return self._listen()
         elif inp.startswith('edit'):
             n = inp.split(' ')[1]
             link = input('Вставьте сслыку: ')
@@ -43,11 +43,11 @@ class Converter:
             to = input('До: ')
             step = input('Шаг: ')
             self.__links[n] = {"link": link, "start": from_, "stop": to, "step": step}
-            return self.listen()
+            return self._listen()
         elif inp.startswith('del'):
             n = inp.split(' ')[1]
             self.__links.pop(n)
-            return self.listen()
+            return self._listen()
         else:
             return inp
 
