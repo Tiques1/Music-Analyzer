@@ -1,0 +1,44 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'main/css/slider.css' %}?{% now 'U' %}" xmlns="http://www.w3.org/1999/html">
+
+<title>{% block title %}
+       {% endblock %}</title>
+
+<body id="body">
+  <div class="navbar">
+    <a href="{% url 'main_home' %}">Главная</a>
+    <a href="/liked/">Понравившиеся</a>
+    {% for group in user.groups.all %}
+      {% if group.name == 'manager' %}
+        <a href="/statistics/">Статистика</a>
+      {% endif %}
+    {% endfor %}
+
+ </div>
+
+  <!-- {% block content %}
+  {% endblock %} -->
+  <div id="trackList">
+    {% for el in track_list %}
+          <div id="trackListElement">
+              <div id="info">
+                  <div id="trackName">
+                      <a href="/" class="text">{{ el.1 }}</a>
+                  </div>
+                  <div id="artistUnderTrack">
+                      {% for ar in el.4 %}
+                        <a href="/artist/{{ ar.0 }}" class="artist">{{ ar.1 }}, </a>
+                      {% endfor %}
+                  </div>
+              </div>
+              <div>
+                  <a href="/like/{{ el.0 }}" id="trackLike"><img src="{% static 'main/img/like2.png' %}" class="like-button"></a>
+              </div>
+              <audio controls>
+                <source src="{{ music_url }}{{ el.0 }}.mp3" type="audio/mpeg">
+              </audio>
+          </div>
+    {% endfor %}
+  </div>
+
+</body>

@@ -86,8 +86,11 @@ button {
   left: 25%;
   position: relative;
   width: 50%;
-  border: 1px solid black;
+  // border: 3px solid black;
   margin-bottom: 5px;
+  // background: linear-gradient(135deg, #f06, #4a90e2);
+  border-radius:5px;
+  height: 100px;
 }
 
 #body{
@@ -96,10 +99,6 @@ button {
 
 .png-image{
     background-color: transparent;
-}
-
-.like-button {
-    z-index: 1;
 }
 
 /* Основные стили для панели навигации */
@@ -129,7 +128,7 @@ audio {
     width: 100%;
     height: 40px;
     background-color: transparent; /* Прозрачный фон */
-    border-radius: 5px;
+    // border-radius: 20px;
     box-shadow: none;
     outline: none;
 }
@@ -137,7 +136,6 @@ audio {
 /* Панель управления плеером */
 audio::-webkit-media-controls-panel {
     background-color: #41424b; /* Полупрозрачный фон для панели управления */
-    border-radius: 5px;
 }
 
 /* Стили для кнопок управления */
@@ -163,4 +161,40 @@ audio::-webkit-media-controls-time-remaining-display {
 /* Менее прозрачный фон при наведении на плеер */
 audio:hover {
     background-color: transparent;
+}
+
+#trackName, #trackLike {
+    height:30px;
+    display:inline-block;
+    align:right;
+}
+
+#trackLike{
+    position:absolute;
+    right:0;
+}
+
+#trackName {
+    width: 50%; /* Ширина div */
+    white-space: nowrap; /* Чтобы текст не переносился на новую строку */
+    overflow: hidden; /* Скрытие любого контента, выходящего за пределы div */
+    position: relative;
+    height: 30px;
+}
+
+.text {
+    font-size:1.1em;
+    text-decoration: none;
+    color: black;
+}
+
+.artist {
+    font-size:0.9em;
+    text-decoration: none;
+    color: black;
+}
+
+#artistUnderTrack {
+    margin-bottom: 5px;
+    height: 20px;
 }

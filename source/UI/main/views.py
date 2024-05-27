@@ -28,9 +28,15 @@ def index(request):
 
     db.exec(f"select * from track where LOWER(name) like LOWER('%{name}%')")
     tracks = db.fetch_all()
-    tracks_list = ()
+    tracks_list = []
     if tracks:
         tracks_list = tracks
+
+    for i, track in enumerate(tracks_list):
+        db.exec(f"select artist.id, artist.name from autorship join artist on artist.id = autorship.artist "
+                f"where track = {track[0]}")
+        ar = db.fetch_all()
+        tracks_list[i] = track + tuple((ar, ))
 
     db.exec(f"select * from artist where LOWER(name) like LOWER('%{name}%')")
     artists = db.fetch_all()
@@ -67,6 +73,26 @@ def like(request, track):
         'track': track,
     }
     return JsonResponse(response_data)
+
+
+def liked(request):
+    db = DBHelper(database="music", user="postgres", password="1111", host='localhost')
+    db.exec(f"select * from track where id in (select liked from users.user_liked where user_name = "
+            f"'{request.user.username}')")
+
+    tracks = db.fetch_all()
+    tracks_list = []
+    if tracks:
+        tracks_list = tracks
+
+    for i, track in enumerate(tracks_list):
+        db.exec(f"select artist.id, artist.name from autorship join artist on artist.id = autorship.artist "
+                f"where track = {track[0]}")
+        ar = db.fetch_all()
+        tracks_list[i] = track + tuple((ar,))
+
+    return render(request, "main/liked.html", {'track_list': tracks_list, 'user': request.user,
+                                               'music_url': settings.MUSIC_FILES_URL})
 
 
 def about(request):
